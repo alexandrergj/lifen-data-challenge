@@ -1,0 +1,222 @@
+{
+  "pages": [
+    {
+      "words": [
+        {
+          "text": "routine.",
+          "bbox": { "x_min": 0.36, "x_max": 0.43, "y_min": 0.36, "y_max": 0.38 }
+        },
+        {
+          "text": "notre",
+          "bbox": { "x_min": 0.16, "x_max": 0.21, "y_min": 0.19, "y_max": 0.22 }
+        },
+        {
+          "text": "Nicolas",
+          "bbox": { "x_min": 0.52, "x_max": 0.59, "y_min": 0.34, "y_max": 0.36 }
+        },
+        {
+          "text": "avec",
+          "bbox": { "x_min": 0.3, "x_max": 0.34, "y_min": 0.34, "y_max": 0.36 }
+        },
+        {
+          "text": "une",
+          "bbox": { "x_min": 0.19, "x_max": 0.23, "y_min": 0.36, "y_max": 0.38 }
+        },
+        {
+          "text": "vous",
+          "bbox": { "x_min": 0.66, "x_max": 0.7, "y_min": 0.19, "y_max": 0.22 }
+        },
+        {
+          "text": "confirmer",
+          "bbox": { "x_min": 0.7, "x_max": 0.79, "y_min": 0.19, "y_max": 0.22 }
+        },
+        {
+          "text": "du",
+          "bbox": { "x_min": 0.69, "x_max": 0.71, "y_min": 0.34, "y_max": 0.36 }
+        },
+        {
+          "text": "Docteur",
+          "bbox": { "x_min": 0.6, "x_max": 0.67, "y_min": 0.55, "y_max": 0.56 }
+        },
+        {
+          "text": "Monsieur",
+          "bbox": { "x_min": 0.44, "x_max": 0.52, "y_min": 0.34, "y_max": 0.36 }
+        },
+        {
+          "text": "au",
+          "bbox": { "x_min": 0.77, "x_max": 0.8, "y_min": 0.34, "y_max": 0.36 }
+        },
+        {
+          "text": "JACQUES",
+          "bbox": { "x_min": 0.59, "x_max": 0.69, "y_min": 0.34, "y_max": 0.36 }
+        },
+        {
+          "text": "Suite",
+          "bbox": { "x_min": 0.09, "x_max": 0.14, "y_min": 0.19, "y_max": 0.22 }
+        },
+        {
+          "text": "01/12",
+          "bbox": { "x_min": 0.72, "x_max": 0.77, "y_min": 0.34, "y_max": 0.36 }
+        },
+        {
+          "text": "conversation",
+          "bbox": { "x_min": 0.29, "x_max": 0.39, "y_min": 0.19, "y_max": 0.22 }
+        },
+        {
+          "text": "Nicolas",
+          "bbox": { "x_min": 0.68, "x_max": 0.74, "y_min": 0.55, "y_max": 0.56 }
+        },
+        {
+          "text": "j’ai",
+          "bbox": { "x_min": 0.52, "x_max": 0.55, "y_min": 0.19, "y_max": 0.22 }
+        },
+        {
+          "text": "le",
+          "bbox": { "x_min": 0.35, "x_max": 0.36, "y_min": 0.34, "y_max": 0.36 }
+        },
+        {
+          "text": "le",
+          "bbox": { "x_min": 0.55, "x_max": 0.57, "y_min": 0.19, "y_max": 0.22 }
+        },
+        {
+          "text": "Marseille",
+          "bbox": { "x_min": 0.81, "x_max": 0.89, "y_min": 0.14, "y_max": 0.16 }
+        },
+        {
+          "text": "Timone",
+          "bbox": { "x_min": 0.21, "x_max": 0.29, "y_min": 0.06, "y_max": 0.08 }
+        },
+        {
+          "text": "Juliette",
+          "bbox": { "x_min": 0.74, "x_max": 0.81, "y_min": 0.1, "y_max": 0.12 }
+        },
+        {
+          "text": "Chemin",
+          "bbox": { "x_min": 0.76, "x_max": 0.83, "y_min": 0.12, "y_max": 0.14 }
+        },
+        {
+          "text": "Désert",
+          "bbox": { "x_min": 0.83, "x_max": 0.9, "y_min": 0.12, "y_max": 0.14 }
+        },
+        {
+          "text": "de",
+          "bbox": { "x_min": 0.63, "x_max": 0.65, "y_min": 0.19, "y_max": 0.22 }
+        },
+        {
+          "text": "vérification",
+          "bbox": { "x_min": 0.23, "x_max": 0.33, "y_min": 0.36, "y_max": 0.38 }
+        },
+        {
+          "text": "plaisir",
+          "bbox": { "x_min": 0.57, "x_max": 0.63, "y_min": 0.19, "y_max": 0.22 }
+        },
+        {
+          "text": "Vous",
+          "bbox": { "x_min": 0.09, "x_max": 0.14, "y_min": 0.34, "y_max": 0.36 }
+        },
+        {
+          "text": "rendez-vous.",
+          "bbox": { "x_min": 0.09, "x_max": 0.21, "y_min": 0.22, "y_max": 0.23 }
+        },
+        {
+          "text": "de",
+          "bbox": { "x_min": 0.33, "x_max": 0.36, "y_min": 0.36, "y_max": 0.38 }
+        },
+        {
+          "text": "00",
+          "bbox": { "x_min": 0.8, "x_max": 0.82, "y_min": 0.34, "y_max": 0.36 }
+        },
+        {
+          "text": "01/05/2019",
+          "bbox": { "x_min": 0.74, "x_max": 0.84, "y_min": 0.53, "y_max": 0.55 }
+        },
+        {
+          "text": "100",
+          "bbox": { "x_min": 0.71, "x_max": 0.75, "y_min": 0.12, "y_max": 0.14 }
+        },
+        {
+          "text": "MARTIN",
+          "bbox": { "x_min": 0.82, "x_max": 0.89, "y_min": 0.1, "y_max": 0.12 }
+        },
+        {
+          "text": "pour",
+          "bbox": { "x_min": 0.15, "x_max": 0.19, "y_min": 0.36, "y_max": 0.38 }
+        },
+        {
+          "text": "dernière",
+          "bbox": { "x_min": 0.21, "x_max": 0.28, "y_min": 0.19, "y_max": 0.22 }
+        },
+        {
+          "text": "le",
+          "bbox": { "x_min": 0.72, "x_max": 0.74, "y_min": 0.53, "y_max": 0.55 }
+        },
+        {
+          "text": "JACQUES",
+          "bbox": { "x_min": 0.75, "x_max": 0.84, "y_min": 0.55, "y_max": 0.56 }
+        },
+        {
+          "text": "docteur",
+          "bbox": { "x_min": 0.37, "x_max": 0.43, "y_min": 0.34, "y_max": 0.36 }
+        },
+        {
+          "text": "16h32",
+          "bbox": { "x_min": 0.09, "x_max": 0.15, "y_min": 0.36, "y_max": 0.38 }
+        },
+        {
+          "text": "à",
+          "bbox": { "x_min": 0.14, "x_max": 0.15, "y_min": 0.19, "y_max": 0.22 }
+        },
+        {
+          "text": "téléphonique,",
+          "bbox": { "x_min": 0.4, "x_max": 0.52, "y_min": 0.19, "y_max": 0.22 }
+        },
+        {
+          "text": "rendez-vous",
+          "bbox": { "x_min": 0.19, "x_max": 0.3, "y_min": 0.34, "y_max": 0.36 }
+        },
+        {
+          "text": "avez",
+          "bbox": { "x_min": 0.14, "x_max": 0.19, "y_min": 0.34, "y_max": 0.36 }
+        },
+        {
+          "text": "13005",
+          "bbox": { "x_min": 0.75, "x_max": 0.8, "y_min": 0.14, "y_max": 0.16 }
+        },
+        {
+          "text": "Paris,",
+          "bbox": { "x_min": 0.66, "x_max": 0.72, "y_min": 0.53, "y_max": 0.55 }
+        },
+        {
+          "text": "à",
+          "bbox": { "x_min": 0.82, "x_max": 0.84, "y_min": 0.34, "y_max": 0.36 }
+        },
+        {
+          "text": "notre",
+          "bbox": { "x_min": 0.79, "x_max": 0.84, "y_min": 0.19, "y_max": 0.22 }
+        },
+        {
+          "text": "RENDEZ-VOUS",
+          "bbox": { "x_min": 0.37, "x_max": 0.61, "y_min": 0.27, "y_max": 0.3 }
+        },
+        {
+          "text": "la",
+          "bbox": { "x_min": 0.19, "x_max": 0.21, "y_min": 0.06, "y_max": 0.08 }
+        },
+        {
+          "text": "Madame",
+          "bbox": { "x_min": 0.66, "x_max": 0.74, "y_min": 0.1, "y_max": 0.12 }
+        },
+        {
+          "text": "de",
+          "bbox": { "x_min": 0.16, "x_max": 0.19, "y_min": 0.06, "y_max": 0.08 }
+        },
+        {
+          "text": "Hôpital",
+          "bbox": { "x_min": 0.09, "x_max": 0.16, "y_min": 0.06, "y_max": 0.08 }
+        }
+      ]
+    }
+  ],
+  "original_page_count": 1,
+  "needs_ocr_case": "no_ocr"
+}

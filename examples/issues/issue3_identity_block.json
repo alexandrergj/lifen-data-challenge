@@ -1,0 +1,406 @@
+{
+  "pages": [
+    {
+      "words": [
+        {
+          "text": "3",
+          "bbox": { "x_min": 0.07, "x_max": 0.08, "y_min": 0.08, "y_max": 0.09 }
+        },
+        {
+          "text": "Plaquettes",
+          "bbox": { "x_min": 0.07, "x_max": 0.15, "y_min": 0.37, "y_max": 0.38 }
+        },
+        {
+          "text": "LEROY",
+          "bbox": { "x_min": 0.22, "x_max": 0.28, "y_min": 0.15, "y_max": 0.16 }
+        },
+        {
+          "text": ":",
+          "bbox": { "x_min": 0.11, "x_max": 0.12, "y_min": 0.2, "y_max": 0.21 }
+        },
+        {
+          "text": "Paul",
+          "bbox": { "x_min": 0.18, "x_max": 0.21, "y_min": 0.43, "y_max": 0.44 }
+        },
+        {
+          "text": "150",
+          "bbox": { "x_min": 0.64, "x_max": 0.67, "y_min": 0.37, "y_max": 0.38 }
+        },
+        {
+          "text": "61",
+          "bbox": { "x_min": 0.12, "x_max": 0.14, "y_min": 0.1, "y_max": 0.11 }
+        },
+        {
+          "text": "Compte",
+          "bbox": { "x_min": 0.07, "x_max": 0.15, "y_min": 0.26, "y_max": 0.28 }
+        },
+        {
+          "text": "par",
+          "bbox": { "x_min": 0.12, "x_max": 0.14, "y_min": 0.43, "y_max": 0.44 }
+        },
+        {
+          "text": "Résultat",
+          "bbox": { "x_min": 0.42, "x_max": 0.49, "y_min": 0.3, "y_max": 0.31 }
+        },
+        {
+          "text": "µg/L",
+          "bbox": { "x_min": 0.44, "x_max": 0.48, "y_min": 0.39, "y_max": 0.4 }
+        },
+        {
+          "text": "4,0",
+          "bbox": { "x_min": 0.64, "x_max": 0.66, "y_min": 0.35, "y_max": 0.36 }
+        },
+        {
+          "text": ":",
+          "bbox": { "x_min": 0.62, "x_max": 0.63, "y_min": 0.19, "y_max": 0.2 }
+        },
+        {
+          "text": "médicale",
+          "bbox": { "x_min": 0.3, "x_max": 0.38, "y_min": 0.06, "y_max": 0.07 }
+        },
+        {
+          "text": "de",
+          "bbox": { "x_min": 0.46, "x_max": 0.48, "y_min": 0.96, "y_max": 0.97 }
+        },
+        {
+          "text": "de",
+          "bbox": { "x_min": 0.11, "x_max": 0.13, "y_min": 0.15, "y_max": 0.16 }
+        },
+        {
+          "text": "04/07/1988",
+          "bbox": { "x_min": 0.22, "x_max": 0.3, "y_min": 0.19, "y_max": 0.2 }
+        },
+        {
+          "text": ":",
+          "bbox": { "x_min": 0.21, "x_max": 0.22, "y_min": 0.19, "y_max": 0.2 }
+        },
+        {
+          "text": "–",
+          "bbox": { "x_min": 0.67, "x_max": 0.68, "y_min": 0.37, "y_max": 0.38 }
+        },
+        {
+          "text": "08h15",
+          "bbox": { "x_min": 0.75, "x_max": 0.79, "y_min": 0.17, "y_max": 0.18 }
+        },
+        {
+          "text": "de",
+          "bbox": { "x_min": 0.7, "x_max": 0.72, "y_min": 0.3, "y_max": 0.31 }
+        },
+        {
+          "text": "00",
+          "bbox": { "x_min": 0.16, "x_max": 0.18, "y_min": 0.1, "y_max": 0.11 }
+        },
+        {
+          "text": "Valeurs",
+          "bbox": { "x_min": 0.64, "x_max": 0.7, "y_min": 0.3, "y_max": 0.31 }
+        },
+        {
+          "text": "31000",
+          "bbox": { "x_min": 0.19, "x_max": 0.23, "y_min": 0.08, "y_max": 0.09 }
+        },
+        {
+          "text": "fictives",
+          "bbox": { "x_min": 0.56, "x_max": 0.59, "y_min": 0.96, "y_max": 0.97 }
+        },
+        {
+          "text": "15",
+          "bbox": { "x_min": 0.64, "x_max": 0.66, "y_min": 0.39, "y_max": 0.4 }
+        },
+        {
+          "text": "des",
+          "bbox": { "x_min": 0.39, "x_max": 0.42, "y_min": 0.06, "y_max": 0.07 }
+        },
+        {
+          "text": "Cèdres",
+          "bbox": { "x_min": 0.43, "x_max": 0.5, "y_min": 0.06, "y_max": 0.07 }
+        },
+        {
+          "text": "150",
+          "bbox": { "x_min": 0.68, "x_max": 0.7, "y_min": 0.39, "y_max": 0.4 }
+        },
+        {
+          "text": "naissance",
+          "bbox": { "x_min": 0.13, "x_max": 0.21, "y_min": 0.19, "y_max": 0.2 }
+        },
+        {
+          "text": "F",
+          "bbox": { "x_min": 0.12, "x_max": 0.13, "y_min": 0.2, "y_max": 0.21 }
+        },
+        {
+          "text": "Leucocytes",
+          "bbox": { "x_min": 0.07, "x_max": 0.15, "y_min": 0.35, "y_max": 0.36 }
+        },
+        {
+          "text": "Prénom(s)",
+          "bbox": { "x_min": 0.07, "x_max": 0.15, "y_min": 0.17, "y_max": 0.18 }
+        },
+        {
+          "text": "rendu",
+          "bbox": { "x_min": 0.15, "x_max": 0.22, "y_min": 0.26, "y_max": 0.28 }
+        },
+        {
+          "text": "G/L",
+          "bbox": { "x_min": 0.45, "x_max": 0.48, "y_min": 0.35, "y_max": 0.36 }
+        },
+        {
+          "text": "Toulouse",
+          "bbox": { "x_min": 0.23, "x_max": 0.3, "y_min": 0.08, "y_max": 0.09 }
+        },
+        {
+          "text": "Prescripteur",
+          "bbox": { "x_min": 0.55, "x_max": 0.64, "y_min": 0.15, "y_max": 0.16 }
+        },
+        {
+          "text": "Antoine",
+          "bbox": { "x_min": 0.68, "x_max": 0.74, "y_min": 0.15, "y_max": 0.16 }
+        },
+        {
+          "text": ":",
+          "bbox": { "x_min": 0.65, "x_max": 0.66, "y_min": 0.15, "y_max": 0.16 }
+        },
+        {
+          "text": "Document",
+          "bbox": { "x_min": 0.41, "x_max": 0.46, "y_min": 0.96, "y_max": 0.97 }
+        },
+        {
+          "text": "naissance",
+          "bbox": { "x_min": 0.13, "x_max": 0.21, "y_min": 0.15, "y_max": 0.16 }
+        },
+        {
+          "text": "00",
+          "bbox": { "x_min": 0.14, "x_max": 0.16, "y_min": 0.1, "y_max": 0.11 }
+        },
+        {
+          "text": "Dr",
+          "bbox": { "x_min": 0.16, "x_max": 0.17, "y_min": 0.43, "y_max": 0.44 }
+        },
+        {
+          "text": "Prélevé",
+          "bbox": { "x_min": 0.55, "x_max": 0.61, "y_min": 0.17, "y_max": 0.18 }
+        },
+        {
+          "text": "13,8",
+          "bbox": { "x_min": 0.42, "x_max": 0.45, "y_min": 0.33, "y_max": 0.34 }
+        },
+        {
+          "text": "Patient(e)",
+          "bbox": { "x_min": 0.64, "x_max": 0.71, "y_min": 0.06, "y_max": 0.07 }
+        },
+        {
+          "text": "Dr",
+          "bbox": { "x_min": 0.66, "x_max": 0.68, "y_min": 0.15, "y_max": 0.16 }
+        },
+        {
+          "text": "Camille",
+          "bbox": { "x_min": 0.16, "x_max": 0.22, "y_min": 0.17, "y_max": 0.18 }
+        },
+        {
+          "text": "–",
+          "bbox": { "x_min": 0.67, "x_max": 0.68, "y_min": 0.35, "y_max": 0.36 }
+        },
+        {
+          "text": "–",
+          "bbox": { "x_min": 0.5, "x_max": 0.51, "y_min": 0.96, "y_max": 0.97 }
+        },
+        {
+          "text": "Hémoglobine",
+          "bbox": { "x_min": 0.07, "x_max": 0.17, "y_min": 0.33, "y_max": 0.34 }
+        },
+        {
+          "text": "biologiste",
+          "bbox": { "x_min": 0.29, "x_max": 0.36, "y_min": 0.43, "y_max": 0.44 }
+        },
+        {
+          "text": "21/10/2024",
+          "bbox": { "x_min": 0.64, "x_max": 0.73, "y_min": 0.17, "y_max": 0.18 }
+        },
+        {
+          "text": "05",
+          "bbox": { "x_min": 0.1, "x_max": 0.12, "y_min": 0.1, "y_max": 0.11 }
+        },
+        {
+          "text": "ROUX",
+          "bbox": { "x_min": 0.74, "x_max": 0.79, "y_min": 0.15, "y_max": 0.16 }
+        },
+        {
+          "text": "LEROY",
+          "bbox": { "x_min": 0.64, "x_max": 0.71, "y_min": 0.08, "y_max": 0.09 }
+        },
+        {
+          "text": "biologie",
+          "bbox": { "x_min": 0.21, "x_max": 0.29, "y_min": 0.06, "y_max": 0.07 }
+        },
+        {
+          "text": "16,0",
+          "bbox": { "x_min": 0.69, "x_max": 0.72, "y_min": 0.33, "y_max": 0.34 }
+        },
+        {
+          "text": ":",
+          "bbox": { "x_min": 0.21, "x_max": 0.22, "y_min": 0.15, "y_max": 0.16 }
+        },
+        {
+          "text": "des",
+          "bbox": { "x_min": 0.11, "x_max": 0.13, "y_min": 0.08, "y_max": 0.09 }
+        },
+        {
+          "text": ":",
+          "bbox": { "x_min": 0.63, "x_max": 0.64, "y_min": 0.17, "y_max": 0.18 }
+        },
+        {
+          "text": "Nom",
+          "bbox": { "x_min": 0.07, "x_max": 0.1, "y_min": 0.15, "y_max": 0.16 }
+        },
+        {
+          "text": "–",
+          "bbox": { "x_min": 0.66, "x_max": 0.67, "y_min": 0.39, "y_max": 0.4 }
+        },
+        {
+          "text": "24-0098812",
+          "bbox": { "x_min": 0.63, "x_max": 0.71, "y_min": 0.19, "y_max": 0.2 }
+        },
+        {
+          "text": "référence",
+          "bbox": { "x_min": 0.73, "x_max": 0.8, "y_min": 0.3, "y_max": 0.31 }
+        },
+        {
+          "text": "Laboratoire",
+          "bbox": { "x_min": 0.07, "x_max": 0.18, "y_min": 0.06, "y_max": 0.07 }
+        },
+        {
+          "text": ":",
+          "bbox": { "x_min": 0.71, "x_max": 0.72, "y_min": 0.06, "y_max": 0.07 }
+        },
+        {
+          "text": "Camille",
+          "bbox": { "x_min": 0.71, "x_max": 0.79, "y_min": 0.08, "y_max": 0.09 }
+        },
+        {
+          "text": "245",
+          "bbox": { "x_min": 0.42, "x_max": 0.45, "y_min": 0.37, "y_max": 0.38 }
+        },
+        {
+          "text": "d’analyses",
+          "bbox": { "x_min": 0.22, "x_max": 0.33, "y_min": 0.26, "y_max": 0.28 }
+        },
+        {
+          "text": "le",
+          "bbox": { "x_min": 0.62, "x_max": 0.63, "y_min": 0.17, "y_max": 0.18 }
+        },
+        {
+          "text": "Validé",
+          "bbox": { "x_min": 0.07, "x_max": 0.11, "y_min": 0.43, "y_max": 0.44 }
+        },
+        {
+          "text": "Tél",
+          "bbox": { "x_min": 0.07, "x_max": 0.09, "y_min": 0.1, "y_max": 0.11 }
+        },
+        {
+          "text": "400",
+          "bbox": { "x_min": 0.69, "x_max": 0.71, "y_min": 0.37, "y_max": 0.38 }
+        },
+        {
+          "text": ":",
+          "bbox": { "x_min": 0.15, "x_max": 0.16, "y_min": 0.43, "y_max": 0.44 }
+        },
+        {
+          "text": "Dossier",
+          "bbox": { "x_min": 0.55, "x_max": 0.61, "y_min": 0.19, "y_max": 0.2 }
+        },
+        {
+          "text": "de",
+          "bbox": { "x_min": 0.18, "x_max": 0.21, "y_min": 0.06, "y_max": 0.07 }
+        },
+        {
+          "text": "rue",
+          "bbox": { "x_min": 0.08, "x_max": 0.1, "y_min": 0.08, "y_max": 0.09 }
+        },
+        {
+          "text": "Sexe",
+          "bbox": { "x_min": 0.07, "x_max": 0.11, "y_min": 0.2, "y_max": 0.21 }
+        },
+        {
+          "text": "Marie",
+          "bbox": { "x_min": 0.22, "x_max": 0.26, "y_min": 0.17, "y_max": 0.18 }
+        },
+        {
+          "text": "–",
+          "bbox": { "x_min": 0.68, "x_max": 0.69, "y_min": 0.33, "y_max": 0.34 }
+        },
+        {
+          "text": "G/L",
+          "bbox": { "x_min": 0.45, "x_max": 0.48, "y_min": 0.37, "y_max": 0.38 }
+        },
+        {
+          "text": "Ferritine",
+          "bbox": { "x_min": 0.07, "x_max": 0.13, "y_min": 0.39, "y_max": 0.4 }
+        },
+        {
+          "text": "6,2",
+          "bbox": { "x_min": 0.42, "x_max": 0.44, "y_min": 0.35, "y_max": 0.36 }
+        },
+        {
+          "text": "test",
+          "bbox": { "x_min": 0.48, "x_max": 0.5, "y_min": 0.96, "y_max": 0.97 }
+        },
+        {
+          "text": ":",
+          "bbox": { "x_min": 0.09, "x_max": 0.1, "y_min": 0.1, "y_max": 0.11 }
+        },
+        {
+          "text": "g/dL",
+          "bbox": { "x_min": 0.46, "x_max": 0.49, "y_min": 0.33, "y_max": 0.34 }
+        },
+        {
+          "text": "00",
+          "bbox": { "x_min": 0.18, "x_max": 0.2, "y_min": 0.1, "y_max": 0.11 }
+        },
+        {
+          "text": "GIRARD,",
+          "bbox": { "x_min": 0.22, "x_max": 0.29, "y_min": 0.43, "y_max": 0.44 }
+        },
+        {
+          "text": "Analyse",
+          "bbox": { "x_min": 0.07, "x_max": 0.13, "y_min": 0.3, "y_max": 0.31 }
+        },
+        {
+          "text": "Écoles,",
+          "bbox": { "x_min": 0.13, "x_max": 0.18, "y_min": 0.08, "y_max": 0.09 }
+        },
+        {
+          "text": ":",
+          "bbox": { "x_min": 0.15, "x_max": 0.16, "y_min": 0.17, "y_max": 0.18 }
+        },
+        {
+          "text": "à",
+          "bbox": { "x_min": 0.73, "x_max": 0.74, "y_min": 0.17, "y_max": 0.18 }
+        },
+        {
+          "text": "données",
+          "bbox": { "x_min": 0.51, "x_max": 0.56, "y_min": 0.96, "y_max": 0.97 }
+        },
+        {
+          "text": "18",
+          "bbox": { "x_min": 0.42, "x_max": 0.44, "y_min": 0.39, "y_max": 0.4 }
+        },
+        {
+          "text": "de",
+          "bbox": { "x_min": 0.11, "x_max": 0.13, "y_min": 0.19, "y_max": 0.2 }
+        },
+        {
+          "text": "Date",
+          "bbox": { "x_min": 0.07, "x_max": 0.1, "y_min": 0.19, "y_max": 0.2 }
+        },
+        {
+          "text": "12,0",
+          "bbox": { "x_min": 0.64, "x_max": 0.67, "y_min": 0.33, "y_max": 0.34 }
+        },
+        {
+          "text": "10,0",
+          "bbox": { "x_min": 0.68, "x_max": 0.71, "y_min": 0.35, "y_max": 0.36 }
+        }
+      ]
+    }
+  ],
+  "original_page_count": 1,
+  "needs_ocr_case": "no_ocr"
+}

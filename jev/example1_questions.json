@@ -1,0 +1,14 @@
+{
+  "patient": {
+    "type": "choice",
+    "instructions": "`document` is a French medical document (letter, report, prescription...). Which person is the patient, the person the document is about: the one who is examined, treated, hospitalised, tested or given an appointment? Doctors, secretaries, nurses and relatives are never the patient.",
+    "criteria": {
+      "Juliette MARTIN": "Juliette MARTIN (first name Juliette, last name MARTIN).",
+      "Nicolas JACQUES": "Nicolas JACQUES (first name Nicolas, last name JACQUES)."
+    }
+  },
+  "patient_is_listed": {
+    "type": "noul",
+    "instructions": "Is one of the people in `candidates` the patient of `document`, the person the document is about (not a doctor, secretary, nurse or relative)?"
+  }
+}

@@ -1,0 +1,426 @@
+{
+  "pages": [
+    {
+      "words": [
+        {
+          "text": "consultation",
+          "bbox": { "x_min": 0.26, "x_max": 0.37, "y_min": 0.58, "y_max": 0.59 }
+        },
+        {
+          "text": "hanche",
+          "bbox": { "x_min": 0.77, "x_max": 0.84, "y_min": 0.58, "y_max": 0.59 }
+        },
+        {
+          "text": "et",
+          "bbox": { "x_min": 0.52, "x_max": 0.54, "y_min": 0.59, "y_max": 0.61 }
+        },
+        {
+          "text": "qui",
+          "bbox": { "x_min": 0.54, "x_max": 0.57, "y_min": 0.59, "y_max": 0.61 }
+        },
+        {
+          "text": "le",
+          "bbox": { "x_min": 0.8, "x_max": 0.81, "y_min": 0.81, "y_max": 0.82 }
+        },
+        {
+          "text": "retrouve",
+          "bbox": { "x_min": 0.43, "x_max": 0.5, "y_min": 0.61, "y_max": 0.63 }
+        },
+        {
+          "text": "à",
+          "bbox": { "x_min": 0.74, "x_max": 0.75, "y_min": 0.58, "y_max": 0.59 }
+        },
+        {
+          "text": "de",
+          "bbox": { "x_min": 0.24, "x_max": 0.26, "y_min": 0.7, "y_max": 0.72 }
+        },
+        {
+          "text": "concerne",
+          "bbox": { "x_min": 0.57, "x_max": 0.65, "y_min": 0.59, "y_max": 0.61 }
+        },
+        {
+          "text": "Jean",
+          "bbox": { "x_min": 0.46, "x_max": 0.5, "y_min": 0.58, "y_max": 0.59 }
+        },
+        {
+          "text": "s’agit",
+          "bbox": { "x_min": 0.11, "x_max": 0.16, "y_min": 0.59, "y_max": 0.61 }
+        },
+        {
+          "text": "revu",
+          "bbox": { "x_min": 0.19, "x_max": 0.23, "y_min": 0.58, "y_max": 0.59 }
+        },
+        {
+          "text": "William",
+          "bbox": { "x_min": 0.72, "x_max": 0.79, "y_min": 0.24, "y_max": 0.25 }
+        },
+        {
+          "text": "Le",
+          "bbox": { "x_min": 0.89, "x_max": 0.91, "y_min": 0.61, "y_max": 0.63 }
+        },
+        {
+          "text": "actuellement",
+          "bbox": { "x_min": 0.25, "x_max": 0.36, "y_min": 0.63, "y_max": 0.65 }
+        },
+        {
+          "text": "bandage.",
+          "bbox": { "x_min": 0.4, "x_max": 0.49, "y_min": 0.63, "y_max": 0.65 }
+        },
+        {
+          "text": "jambe",
+          "bbox": { "x_min": 0.72, "x_max": 0.78, "y_min": 0.59, "y_max": 0.61 }
+        },
+        {
+          "text": "apparue",
+          "bbox": { "x_min": 0.27, "x_max": 0.34, "y_min": 0.59, "y_max": 0.61 }
+        },
+        {
+          "text": "Tellier",
+          "bbox": { "x_min": 0.86, "x_max": 0.92, "y_min": 0.26, "y_max": 0.27 }
+        },
+        {
+          "text": "9308",
+          "bbox": { "x_min": 0.2, "x_max": 0.25, "y_min": 0.45, "y_max": 0.46 }
+        },
+        {
+          "text": "13/12/2019",
+          "bbox": { "x_min": 0.82, "x_max": 0.91, "y_min": 0.81, "y_max": 0.82 }
+        },
+        {
+          "text": "revoir",
+          "bbox": { "x_min": 0.28, "x_max": 0.33, "y_min": 0.7, "y_max": 0.72 }
+        },
+        {
+          "text": "A",
+          "bbox": { "x_min": 0.25, "x_max": 0.26, "y_min": 0.61, "y_max": 0.63 }
+        },
+        {
+          "text": "Paris",
+          "bbox": { "x_min": 0.75, "x_max": 0.8, "y_min": 0.81, "y_max": 0.82 }
+        },
+        {
+          "text": "d’un",
+          "bbox": { "x_min": 0.37, "x_max": 0.4, "y_min": 0.63, "y_max": 0.65 }
+        },
+        {
+          "text": "la",
+          "bbox": { "x_min": 0.75, "x_max": 0.77, "y_min": 0.58, "y_max": 0.59 }
+        },
+        {
+          "text": "1",
+          "bbox": { "x_min": 0.18, "x_max": 0.19, "y_min": 0.45, "y_max": 0.46 }
+        },
+        {
+          "text": "jusqu’à",
+          "bbox": { "x_min": 0.83, "x_max": 0.89, "y_min": 0.59, "y_max": 0.61 }
+        },
+        {
+          "text": "d’une",
+          "bbox": { "x_min": 0.17, "x_max": 0.21, "y_min": 0.59, "y_max": 0.61 }
+        },
+        {
+          "text": "mouvement",
+          "bbox": { "x_min": 0.58, "x_max": 0.68, "y_min": 0.61, "y_max": 0.63 }
+        },
+        {
+          "text": "test",
+          "bbox": { "x_min": 0.14, "x_max": 0.17, "y_min": 0.67, "y_max": 0.68 }
+        },
+        {
+          "text": "faux",
+          "bbox": { "x_min": 0.53, "x_max": 0.57, "y_min": 0.61, "y_max": 0.63 }
+        },
+        {
+          "text": "bien",
+          "bbox": { "x_min": 0.15, "x_max": 0.19, "y_min": 0.58, "y_max": 0.59 }
+        },
+        {
+          "text": "lui",
+          "bbox": { "x_min": 0.14, "x_max": 0.16, "y_min": 0.7, "y_max": 0.72 }
+        },
+        {
+          "text": "genoux",
+          "bbox": { "x_min": 0.11, "x_max": 0.18, "y_min": 0.63, "y_max": 0.65 }
+        },
+        {
+          "text": "123",
+          "bbox": { "x_min": 0.32, "x_max": 0.35, "y_min": 0.45, "y_max": 0.46 }
+        },
+        {
+          "text": "prochain.",
+          "bbox": { "x_min": 0.55, "x_max": 0.63, "y_min": 0.7, "y_max": 0.72 }
+        },
+        {
+          "text": "DUPONT",
+          "bbox": { "x_min": 0.5, "x_max": 0.58, "y_min": 0.58, "y_max": 0.59 }
+        },
+        {
+          "text": "ECLANCHER",
+          "bbox": { "x_min": 0.79, "x_max": 0.91, "y_min": 0.24, "y_max": 0.25 }
+        },
+        {
+          "text": "ablation",
+          "bbox": { "x_min": 0.42, "x_max": 0.48, "y_min": 0.7, "y_max": 0.72 }
+        },
+        {
+          "text": "douleur",
+          "bbox": { "x_min": 0.67, "x_max": 0.74, "y_min": 0.58, "y_max": 0.59 }
+        },
+        {
+          "text": "de",
+          "bbox": { "x_min": 0.34, "x_max": 0.37, "y_min": 0.67, "y_max": 0.68 }
+        },
+        {
+          "text": "Charles",
+          "bbox": { "x_min": 0.78, "x_max": 0.86, "y_min": 0.26, "y_max": 0.27 }
+        },
+        {
+          "text": "la",
+          "bbox": { "x_min": 0.9, "x_max": 0.91, "y_min": 0.59, "y_max": 0.61 }
+        },
+        {
+          "text": "Monsieur",
+          "bbox": { "x_min": 0.37, "x_max": 0.45, "y_min": 0.58, "y_max": 0.59 }
+        },
+        {
+          "text": "la",
+          "bbox": { "x_min": 0.19, "x_max": 0.2, "y_min": 0.54, "y_max": 0.55 }
+        },
+        {
+          "text": "plusieurs",
+          "bbox": { "x_min": 0.39, "x_max": 0.47, "y_min": 0.59, "y_max": 0.61 }
+        },
+        {
+          "text": ":",
+          "bbox": { "x_min": 0.16, "x_max": 0.17, "y_min": 0.43, "y_max": 0.44 }
+        },
+        {
+          "text": "gêne",
+          "bbox": { "x_min": 0.22, "x_max": 0.26, "y_min": 0.59, "y_max": 0.61 }
+        },
+        {
+          "text": "droite.",
+          "bbox": { "x_min": 0.19, "x_max": 0.24, "y_min": 0.61, "y_max": 0.63 }
+        },
+        {
+          "text": "J’ai",
+          "bbox": { "x_min": 0.11, "x_max": 0.14, "y_min": 0.58, "y_max": 0.59 }
+        },
+        {
+          "text": "une",
+          "bbox": { "x_min": 0.63, "x_max": 0.67, "y_min": 0.58, "y_max": 0.59 }
+        },
+        {
+          "text": "à",
+          "bbox": { "x_min": 0.73, "x_max": 0.75, "y_min": 0.81, "y_max": 0.82 }
+        },
+        {
+          "text": "Fait",
+          "bbox": { "x_min": 0.7, "x_max": 0.73, "y_min": 0.81, "y_max": 0.82 }
+        },
+        {
+          "text": "13/12/2019",
+          "bbox": { "x_min": 0.32, "x_max": 0.41, "y_min": 0.54, "y_max": 0.55 }
+        },
+        {
+          "text": "NIR",
+          "bbox": { "x_min": 0.11, "x_max": 0.15, "y_min": 0.45, "y_max": 0.46 }
+        },
+        {
+          "text": "a",
+          "bbox": { "x_min": 0.37, "x_max": 0.39, "y_min": 0.59, "y_max": 0.61 }
+        },
+        {
+          "text": "de",
+          "bbox": { "x_min": 0.16, "x_max": 0.18, "y_min": 0.54, "y_max": 0.55 }
+        },
+        {
+          "text": "ne",
+          "bbox": { "x_min": 0.22, "x_max": 0.25, "y_min": 0.67, "y_max": 0.68 }
+        },
+        {
+          "text": "75000",
+          "bbox": { "x_min": 0.26, "x_max": 0.31, "y_min": 0.45, "y_max": 0.46 }
+        },
+        {
+          "text": "16",
+          "bbox": { "x_min": 0.72, "x_max": 0.75, "y_min": 0.26, "y_max": 0.27 }
+        },
+        {
+          "text": "pour",
+          "bbox": { "x_min": 0.34, "x_max": 0.38, "y_min": 0.7, "y_max": 0.72 }
+        },
+        {
+          "text": "consultation:",
+          "bbox": { "x_min": 0.2, "x_max": 0.31, "y_min": 0.54, "y_max": 0.55 }
+        },
+        {
+          "text": "mois",
+          "bbox": { "x_min": 0.47, "x_max": 0.52, "y_min": 0.59, "y_max": 0.61 }
+        },
+        {
+          "text": "une",
+          "bbox": { "x_min": 0.38, "x_max": 0.41, "y_min": 0.7, "y_max": 0.72 }
+        },
+        {
+          "text": "droite.",
+          "bbox": { "x_min": 0.84, "x_max": 0.9, "y_min": 0.58, "y_max": 0.59 }
+        },
+        {
+          "text": "Dr",
+          "bbox": { "x_min": 0.78, "x_max": 0.8, "y_min": 0.83, "y_max": 0.84 }
+        },
+        {
+          "text": "123456789123",
+          "bbox": { "x_min": 0.17, "x_max": 0.32, "y_min": 0.43, "y_max": 0.44 }
+        },
+        {
+          "text": "un",
+          "bbox": { "x_min": 0.5, "x_max": 0.53, "y_min": 0.61, "y_max": 0.63 }
+        },
+        {
+          "text": "ADLER",
+          "bbox": { "x_min": 0.85, "x_max": 0.91, "y_min": 0.83, "y_max": 0.84 }
+        },
+        {
+          "text": "le",
+          "bbox": { "x_min": 0.49, "x_max": 0.5, "y_min": 0.7, "y_max": 0.72 }
+        },
+        {
+          "text": "75016",
+          "bbox": { "x_min": 0.81, "x_max": 0.86, "y_min": 0.27, "y_max": 0.29 }
+        },
+        {
+          "text": "il",
+          "bbox": { "x_min": 0.34, "x_max": 0.35, "y_min": 0.59, "y_max": 0.61 }
+        },
+        {
+          "text": "le",
+          "bbox": { "x_min": 0.76, "x_max": 0.78, "y_min": 0.61, "y_max": 0.63 }
+        },
+        {
+          "text": ":",
+          "bbox": { "x_min": 0.16, "x_max": 0.17, "y_min": 0.45, "y_max": 0.46 }
+        },
+        {
+          "text": "en",
+          "bbox": { "x_min": 0.24, "x_max": 0.26, "y_min": 0.58, "y_max": 0.59 }
+        },
+        {
+          "text": "Il",
+          "bbox": { "x_min": 0.9, "x_max": 0.91, "y_min": 0.58, "y_max": 0.59 }
+        },
+        {
+          "text": "Le",
+          "bbox": { "x_min": 0.11, "x_max": 0.14, "y_min": 0.67, "y_max": 0.68 }
+        },
+        {
+          "text": "rien",
+          "bbox": { "x_min": 0.3, "x_max": 0.34, "y_min": 0.67, "y_max": 0.68 }
+        },
+        {
+          "text": "Date",
+          "bbox": { "x_min": 0.11, "x_max": 0.16, "y_min": 0.54, "y_max": 0.55 }
+        },
+        {
+          "text": "droite",
+          "bbox": { "x_min": 0.78, "x_max": 0.83, "y_min": 0.59, "y_max": 0.61 }
+        },
+        {
+          "text": "aussi",
+          "bbox": { "x_min": 0.65, "x_max": 0.7, "y_min": 0.59, "y_max": 0.61 }
+        },
+        {
+          "text": "IPP",
+          "bbox": { "x_min": 0.11, "x_max": 0.15, "y_min": 0.43, "y_max": 0.44 }
+        },
+        {
+          "text": "00",
+          "bbox": { "x_min": 0.37, "x_max": 0.39, "y_min": 0.45, "y_max": 0.46 }
+        },
+        {
+          "text": "Je",
+          "bbox": { "x_min": 0.11, "x_max": 0.14, "y_min": 0.7, "y_max": 0.72 }
+        },
+        {
+          "text": "Paris",
+          "bbox": { "x_min": 0.87, "x_max": 0.91, "y_min": 0.27, "y_max": 0.29 }
+        },
+        {
+          "text": "mois",
+          "bbox": { "x_min": 0.51, "x_max": 0.55, "y_min": 0.7, "y_max": 0.72 }
+        },
+        {
+          "text": "pour",
+          "bbox": { "x_min": 0.59, "x_max": 0.63, "y_min": 0.58, "y_max": 0.59 }
+        },
+        {
+          "text": "la",
+          "bbox": { "x_min": 0.7, "x_max": 0.72, "y_min": 0.59, "y_max": 0.61 }
+        },
+        {
+          "text": "effectué",
+          "bbox": { "x_min": 0.68, "x_max": 0.75, "y_min": 0.61, "y_max": 0.63 }
+        },
+        {
+          "text": "propose",
+          "bbox": { "x_min": 0.16, "x_max": 0.24, "y_min": 0.7, "y_max": 0.72 }
+        },
+        {
+          "text": "cheville",
+          "bbox": { "x_min": 0.11, "x_max": 0.18, "y_min": 0.61, "y_max": 0.63 }
+        },
+        {
+          "text": "dispose",
+          "bbox": { "x_min": 0.18, "x_max": 0.25, "y_min": 0.63, "y_max": 0.65 }
+        },
+        {
+          "text": "le",
+          "bbox": { "x_min": 0.26, "x_max": 0.28, "y_min": 0.7, "y_max": 0.72 }
+        },
+        {
+          "text": "ECG",
+          "bbox": { "x_min": 0.18, "x_max": 0.22, "y_min": 0.67, "y_max": 0.68 }
+        },
+        {
+          "text": "on",
+          "bbox": { "x_min": 0.4, "x_max": 0.42, "y_min": 0.61, "y_max": 0.63 }
+        },
+        {
+          "text": "révèle",
+          "bbox": { "x_min": 0.25, "x_max": 0.3, "y_min": 0.67, "y_max": 0.68 }
+        },
+        {
+          "text": "y",
+          "bbox": { "x_min": 0.36, "x_max": 0.37, "y_min": 0.59, "y_max": 0.61 }
+        },
+        {
+          "text": "particulier.",
+          "bbox": { "x_min": 0.37, "x_max": 0.46, "y_min": 0.67, "y_max": 0.68 }
+        },
+        {
+          "text": "Irene",
+          "bbox": { "x_min": 0.8, "x_max": 0.85, "y_min": 0.83, "y_max": 0.84 }
+        },
+        {
+          "text": "rue",
+          "bbox": { "x_min": 0.75, "x_max": 0.78, "y_min": 0.26, "y_max": 0.27 }
+        },
+        {
+          "text": "Dr",
+          "bbox": { "x_min": 0.69, "x_max": 0.72, "y_min": 0.24, "y_max": 0.25 }
+        },
+        {
+          "text": "10/12/2019.",
+          "bbox": { "x_min": 0.78, "x_max": 0.89, "y_min": 0.61, "y_max": 0.63 }
+        },
+        {
+          "text": "l’interrogatoire",
+          "bbox": { "x_min": 0.27, "x_max": 0.4, "y_min": 0.61, "y_max": 0.63 }
+        }
+      ]
+    }
+  ],
+  "original_page_count": 1,
+  "needs_ocr_case": "no_ocr"
+}

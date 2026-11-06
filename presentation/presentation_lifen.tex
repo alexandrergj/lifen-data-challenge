@@ -1,0 +1,1040 @@
+% Présentation Lifen, partie 2 : extraire l'identité du patient
+% Compilation : tectonic presentation_lifen.tex
+% Plan : NER (3 diapositives), BiLSTM (3), petit LLM (15, d'après l'article de Lifen [1]).
+\documentclass[11pt,aspectratio=169]{beamer}
+
+\usefonttheme{serif}
+\usefonttheme{professionalfonts}
+\usepackage{amsmath,amssymb}
+\usepackage{fontspec}            % Latin Modern, la police par défaut de LaTeX
+\usepackage[english,french]{babel}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,babel}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.17}
+
+% Couleurs des figures : palette par défaut de matplotlib
+\definecolor{mlblue}{HTML}{1F77B4}
+\definecolor{mlorange}{HTML}{FF7F0E}
+\definecolor{mlgreen}{HTML}{2CA02C}
+\definecolor{mlred}{HTML}{D62728}
+\definecolor{mlgray}{HTML}{7F7F7F}
+
+% Mise en page sobre, comme un article : texte noir, titres en gras
+\setbeamercolor{normal text}{fg=black,bg=white}
+\setbeamercolor{structure}{fg=black}
+\setbeamerfont{title}{series=\bfseries,size=\LARGE}
+\setbeamerfont{subtitle}{series=\mdseries,shape=\itshape,size=\normalsize}
+\setbeamerfont{frametitle}{series=\bfseries,size=\large}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize item}{\textbullet}
+\setbeamertemplate{enumerate item}{\insertenumlabel.}
+\setbeamertemplate{footline}{%
+  \leavevmode
+  \hbox to \paperwidth{\hskip1cm\color{mlgray}\scriptsize
+    Extraire l'identité du patient\hfill\insertframenumber\,/\,\inserttotalframenumber\hskip1cm}%
+  \vskip2.5mm}
+
+% Références en bleu, comme les liens de citation d'un article
+\newcommand{\refs}[1]{{\color{mlblue}[#1]}}
+\newcommand{\pct}[1]{#1\,\%}
+\newcommand{\en}[1]{\foreignlanguage{english}{#1}}
+% Un mot exact de code ou de sortie, sans l'espace que le français ajoute avant « : »
+\newcommand{\tok}[1]{\foreignlanguage{english}{\texttt{#1}}}
+\newcommand{\np}{{\color{mlgray}n.p.}}  % non publié
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcommand{\VP}{\mathrm{VP}}
+\newcommand{\FP}{\mathrm{FP}}
+\newcommand{\FN}{\mathrm{FN}}
+% Étiquettes de mots
+\newcommand{\tagO}{{\color{mlgray}\scriptsize O}}
+\newcommand{\tagP}[1]{{\color{mlgreen}\scriptsize\bfseries #1}}
+\newcommand{\remarque}[1]{{\footnotesize\color{mlgray}#1\par}}
+
+\title{Extraire l'identité du patient\\ à grande échelle}
+\subtitle{NER, BiLSTM, puis un petit LLM fine-tuné}
+\author{Alexandre Rogojan}
+\institute{Lifen \,·\, stage Machine Learning Engineer \,·\, partie 2}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \titlepage
+\end{frame}
+
+% ===========================================================================
+\begin{frame}{Le problème, et trois façons de le résoudre}
+  Pour chaque document reçu, extraire quatre champs du patient : \textbf{prénom},
+  \textbf{nom}, \textbf{nom de naissance} et \textbf{date de naissance}~\refs{1}. Un champ
+  absent du document donne une réponse vide.
+
+  \vspace{0.7em}
+  \begin{columns}[T]
+    \column{0.30\textwidth}
+    \textbf{Volume}\par\smallskip
+    {\small Des millions de lettres, comptes rendus et notes cliniques par mois~\refs{1}.}
+    \column{0.30\textwidth}
+    \textbf{Temps réel}\par\smallskip
+    {\small Extraction pendant l'ingestion, l'utilisateur attend : la latence est une
+    contrainte dure~\refs{1}.}
+    \column{0.30\textwidth}
+    \textbf{Fiabilité}\par\smallskip
+    {\small Une erreur range le document chez un autre patient. Hébergement HDS, sans IA
+    externe~\refs{2}.}
+  \end{columns}
+
+  \vspace{0.9em}
+  \begin{center}
+    \small
+    \renewcommand{\arraystretch}{1.15}
+    \begin{tabular}{@{}lll@{}}
+      \toprule
+      & \textbf{Principe} & \textbf{Où} \\
+      \midrule
+      \textbf{1\quad NER} & un encodeur étiquette chaque mot & AP-HP~\refs{3} \\
+      \textbf{2\quad BiLSTM} & un réseau récurrent étiquette chaque mot & Lifen, avant~\refs{1} \\
+      \textbf{3\quad Petit LLM} & un décodeur écrit les quatre champs & Lifen, aujourd'hui~\refs{1} \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{frame}
+
+% ===========================================================================
+% 1. NER
+% ===========================================================================
+\begin{frame}{1.1\quad NER : méthode, entrée et sortie}
+  \small
+  \textbf{Méthode.} La reconnaissance d'entités nommées donne une étiquette à chaque mot,
+  avec le schéma BIO~\refs{4} : B = début d'une entité, I = suite, O = hors entité.
+
+  \begin{center}
+    \setlength{\tabcolsep}{2.5pt}
+    \renewcommand{\arraystretch}{1.15}
+    \begin{tabular}{cccccc}
+      J'ai & revu & Monsieur & \textbf{Jean} & \textbf{Pierre} & \textbf{DUPONT} \\
+      \tagO & \tagO & \tagO & \tagP{B-PRÉNOM} & \tagP{I-PRÉNOM} & \tagP{B-NOM}
+    \end{tabular}
+    \par\smallskip
+    \begin{tabular}{cccc}
+      Signé : & Dr & \textbf{Irène} & \textbf{ADLER} \\
+      \tagO & \tagO & \tagP{B-PRÉNOM} & \tagP{B-NOM}
+    \end{tabular}
+  \end{center}
+
+  \begin{columns}[T]
+    \column{0.48\textwidth}
+    \textbf{Entrée}~\refs{3}
+    \begin{itemize}
+      \item Le texte extrait du PDF, découpé en mots (EDS-NLP), puis en sous-mots.
+      \item Documents longs : fenêtres d'au plus 384 mots, coupées en début de phrase.
+    \end{itemize}
+    \column{0.48\textwidth}
+    \textbf{Fonctionnement et sortie}~\refs{3}
+    \begin{itemize}
+      \item Un encodeur de type CamemBERT~\refs{5} lit la fenêtre dans les deux sens ; des
+        têtes CRF choisissent les étiquettes.
+      \item Sortie : des entités typées (12 types), pour \emph{toutes} les personnes.
+    \end{itemize}
+  \end{columns}
+  \[
+    \hat y_i = \arg\max_{y}\, p_\theta(y \mid x, i), \qquad
+    \mathcal{L}(\theta) = -\sum_{i=1}^{n} \log p_\theta\!\left(y_i^\star \mid x, i\right)
+  \]
+  \remarque{Entraînement : 3\,682 documents annotés en deux passes, par 3 annotateurs relus
+  par 3 autres~\refs{3}.}
+\end{frame}
+
+% ---------------------------------------------------------------------------
+\begin{frame}{1.2\quad NER : résultats mesurés}
+  \small
+  Jeu de test de l'AP-HP~\refs{3}, par type d'entité ; noms de toutes les personnes
+  (patients, médecins, tiers). $P = \VP / (\VP + \FP)$, $R = \VP / (\VP + \FN)$,
+  $F_1 = 2PR / (P + R)$.
+
+  \begin{center}
+    \setlength{\tabcolsep}{9pt}
+    \renewcommand{\arraystretch}{1.15}
+    \begin{tabular}{@{}lccc@{}}
+      \toprule
+      \textbf{Entité} & $P$ & $R$ & $F_1$ \\
+      \midrule
+      Prénom            & 98,8 & 98,4 & 98,6 \\
+      Nom               & 98,6 & 98,3 & 98,4 \\
+      Date de naissance & 98,0 & 98,2 & 98,1 \\
+      Toutes (12 types) & 99,1 & 98,8 & 99,0 \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \begin{itemize}\setlength{\itemsep}{1pt}
+    \item \textbf{Par document} : toutes les entités trouvées dans \pct{84,4} des documents.
+    \item \textbf{Données} : le rappel plafonne vers 1\,500 documents d'entraînement, le score
+      par document progresse jusqu'à 3\,000.
+    \item \textbf{Courbe ROC} : non publiée ; l'article n'analyse aucun score de confiance.
+  \end{itemize}
+\end{frame}
+
+% ---------------------------------------------------------------------------
+\begin{frame}{1.3\quad NER : forces, limites et cas limites}
+  \begin{columns}[T]
+    \column{0.30\textwidth}
+    \textbf{Forces}
+    {\small
+    \begin{itemize}\setlength{\itemsep}{2pt}
+      \item Une passe, rapide, possible sur CPU.
+      \item N'invente pas de nom : il étiquette les mots du texte.
+      \item Rappel de \pct{98,4} sur les prénoms, contre \pct{36,9} pour les
+        règles~\refs{3}.
+      \item Outils mûrs pour le français médical : EDS-NLP, CamemBERT.
+    \end{itemize}}
+    \column{0.32\textwidth}
+    \textbf{Limites}
+    {\small
+    \begin{itemize}\setlength{\itemsep}{2pt}
+      \item Annotation mot par mot : 3\,682 documents à l'AP-HP.
+      \item Trouve toutes les personnes : il faut encore choisir le patient.
+      \item Des étiquettes, pas des champs : à recoller, à mettre en forme.
+      \item Fenêtre de 384 mots.
+      \item Dépend de l'extraction du texte du PDF.
+    \end{itemize}}
+    \column{0.34\textwidth}
+    \textbf{Cas limites}
+    {\small
+    \begin{itemize}\setlength{\itemsep}{2pt}
+      \item Le médecin a les mêmes étiquettes que le patient.
+      \item Noms communs : Pierre, Blanc, Rose.
+      \item Mots collés («~JamesSmith~»~\refs{3}), noms coupés.
+      \item Nom de naissance : «~DUPONT, née MARTIN~».
+      \item Noms composés, initiales : LE GALL, J.~DUPONT.
+    \end{itemize}}
+  \end{columns}
+\end{frame}
+
+% ===========================================================================
+% 2. BiLSTM
+% ===========================================================================
+\begin{frame}{2.1\quad BiLSTM : méthode, entrée et sortie}
+  \small
+  \textbf{Méthode.} Toujours une étiquette par mot, avec un réseau récurrent : un LSTM~\refs{6}
+  lit les mots un par un et tient une mémoire $c_t$ ; deux LSTM lisent dans les deux sens ;
+  une couche CRF choisit la suite d'étiquettes~\refs{7}.
+
+  \vspace{0.3em}
+  \begin{columns}[T]
+    \column{0.52\textwidth}
+    \centering
+    \begin{tikzpicture}[scale=0.68, transform shape,
+        cell/.style={draw, minimum width=1.2cm, minimum height=0.42cm},
+        >={Stealth[length=1.6mm]}]
+      \foreach \word/\lab/\col [count=\ii] in
+          {Monsieur/O/mlgray, Jean/B-PRÉNOM/mlgreen, DUPONT/B-NOM/mlgreen, pour/O/mlgray} {
+        \node[font=\small] (x\ii) at ({1.8*(\ii-1)}, 0) {\word};
+        \node[font=\scriptsize\bfseries, text=\col] (y\ii) at ({1.8*(\ii-1)}, 2.3) {\lab};
+        \draw[black!35] (x\ii.north) -- (y\ii.south);
+        \node[cell, draw=mlblue, fill=white] (f\ii) at ({1.8*(\ii-1)}, 0.75) {};
+        \node[cell, draw=mlorange, fill=white] (b\ii) at ({1.8*(\ii-1)}, 1.5) {};
+      }
+      \foreach \ii [evaluate=\ii as \jj using int(\ii+1)] in {1,...,3} {
+        \draw[->, mlblue, thick] (f\ii) -- (f\jj);
+        \draw[->, mlorange, thick] (b\jj) -- (b\ii);
+      }
+      \node[left=3mm of f1, text=mlblue, font=\scriptsize] {LSTM avant $\overrightarrow{h}_t$};
+      \node[left=3mm of b1, text=mlorange, font=\scriptsize] {LSTM arrière $\overleftarrow{h}_t$};
+      \node[left=3mm of y1, font=\scriptsize, text=black!70] {CRF};
+    \end{tikzpicture}
+
+    \raggedright\footnotesize
+    \begin{itemize}\setlength{\itemsep}{1pt}
+      \item \textbf{Entrée} : un vecteur par mot, plongement du mot (100 dimensions) et
+        plongement de ses caractères, lus par un petit BiLSTM (2\,×\,25)~\refs{7,8}.
+      \item Chez Lifen : texte normalisé, appariement de mots, plongements appris de
+        zéro~\refs{1}.
+      \item \textbf{Sortie} : une étiquette par mot ; les noms sur plusieurs mots sont
+        recollés à la main~\refs{1}.
+    \end{itemize}
+    \column{0.44\textwidth}
+    \footnotesize
+    \begin{gather*}
+      (f_t, i_t, o_t) = \sigma\!\left(W [h_{t-1}; x_t] + b\right) \\
+      \tilde c_t = \tanh\!\left(W_c [h_{t-1}; x_t] + b_c\right) \\
+      c_t = f_t \odot c_{t-1} + i_t \odot \tilde c_t \\
+      h_t = o_t \odot \tanh(c_t), \quad h_t = \big[\overrightarrow{h}_t ; \overleftarrow{h}_t\big] \\
+      s(x, y) = \sum_{t} \big(P_{t, y_t} + A_{y_{t-1}, y_t}\big) \\
+      p(y \mid x) = \frac{e^{s(x, y)}}{\sum_{y'} e^{s(x, y')}}
+    \end{gather*}
+    {\scriptsize\color{mlgray} $f, i, o$ : portes d'oubli, d'entrée et de sortie.
+    $P_{t,y}$ : score de l'étiquette $y$ pour le mot $t$ ; $A$ : score des transitions
+    (jamais I-NOM après O). Décodage : $\hat y = \arg\max_y s(x, y)$, par Viterbi.\par}
+  \end{columns}
+\end{frame}
+
+% ---------------------------------------------------------------------------
+\begin{frame}{2.2\quad BiLSTM : résultats mesurés}
+  \small
+  \begin{center}
+    \setlength{\tabcolsep}{4.5pt}
+    \renewcommand{\arraystretch}{1.1}
+    \begin{tabular}{@{}lllccc@{}}
+      \toprule
+      \textbf{Système} & \textbf{Données (test)} & \textbf{Niveau} & $P$ & $R$ & $F_1$ \\
+      \midrule
+      BiLSTM-CRF~\refs{7}      & CoNLL-2003, anglais~\refs{9} & entité & \np & \np & 90,9 \\
+      BiLSTM sans CRF~\refs{7} & CoNLL-2003, anglais          & entité & \np & \np & 89,2 \\
+      BiLSTM~\refs{8}          & i2b2 2014, 1\,304 notes      & token  & 98,3 & 97,4 & 97,8 \\
+      CRF classique~\refs{8}   & i2b2 2014                    & token  & 98,6 & 96,5 & 97,5 \\
+      BiLSTM~\refs{8}          & MIMIC, 1\,635 notes          & token  & 99,2 & 99,3 & 99,2 \\
+      \textbf{BiLSTM de Lifen}~\refs{1} & documents Lifen, 4 champs & champ (macro) & \textbf{96,0} & \np & \np \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \begin{itemize}\setlength{\itemsep}{1pt}
+    \item CoNLL-2003 : personnes, lieux, organisations ; en allemand, néerlandais et espagnol,
+      $F_1$ de 78,8 à 85,8~\refs{7}. La couche CRF ajoute 1,8 point de $F_1$.
+    \item i2b2 et MIMIC : dé-identification de dossiers médicaux, chaque token est identifiant
+      (nom, date, lieu…) ou non. Le BiLSTM bat le CRF classique en rappel.
+    \item \textbf{Courbe ROC} : publiée dans aucun de ces articles ; Lifen ne publie ni le
+      rappel ni le $F_1$ de son BiLSTM.
+  \end{itemize}
+  \remarque{n.p. : non publié. Valeurs du tableau 3 de~\refs{8} ; son résumé donne
+  $P = 97{,}32$ pour i2b2.}
+\end{frame}
+
+% ---------------------------------------------------------------------------
+\begin{frame}{2.3\quad BiLSTM : forces, limites et cas limites}
+  \begin{columns}[T]
+    \column{0.31\textwidth}
+    \textbf{Forces}
+    {\small
+    \begin{itemize}
+      \item Léger et rapide, sur CPU.
+      \item N'invente pas de nom.
+      \item Contexte dans les deux sens ; les caractères aident pour les mots rares.
+      \item Le CRF évite les suites d'étiquettes impossibles.
+      \item $F_1$ de 97,8 à 99,2 en dé-identification~\refs{8}.
+    \end{itemize}}
+    \column{0.33\textwidth}
+    \textbf{Limites}
+    {\small
+    \begin{itemize}
+      \item Chez Lifen : plongements appris de zéro, normalisation et appariement écrits à la
+        main, \pct{96,0} de précision macro~\refs{1}.
+      \item Lit mot après mot : le contexte lointain s'efface, le calcul ne se parallélise
+        pas.
+      \item Étiquettes à recoller ; un nouveau champ demande annotations et code.
+    \end{itemize}}
+    \column{0.31\textwidth}
+    \textbf{Cas limites}
+    {\small
+    \begin{itemize}
+      \item «~M.~Parkinson~» est un nom, «~maladie de Parkinson~» non~\refs{8}.
+      \item Nom sur plusieurs mots ou plusieurs lignes.
+      \item «~DUPONT Jean~» ou «~Jean DUPONT~».
+      \item Erreurs d'OCR, mots coupés.
+      \item Patient, médecin et proche dans la même lettre.
+    \end{itemize}}
+  \end{columns}
+\end{frame}
+
+% ===========================================================================
+% 3. Petit LLM
+% ===========================================================================
+\begin{frame}{3.1\quad Petit LLM : passer au génératif}
+  \small
+  \begin{itemize}
+    \item Le BiLSTM demandait de la normalisation de texte, de l'appariement de mots, des
+      plongements appris de zéro, et un recollage manuel des noms sur plusieurs
+      tokens~\refs{1}.
+    \item Lifen a écarté les encodeurs de type BERT : un seul modèle qui écrit directement
+      la bonne réponse est plus simple~\refs{1}.
+  \end{itemize}
+
+  \vspace{0.6em}
+  \begin{center}
+    \begin{tikzpicture}[
+        box/.style={draw=black!70, font=\footnotesize},
+        >={Stealth[length=1.6mm]}, node distance=6mm]
+      \node[box, text width=4.8cm, align=left] (doc)
+        {{\color{mlgray}Instructions et texte du document}\\[2pt]
+         DUPONT Jean, né le 12/03/1965 · IPP : 400123456 · Compte rendu de consultation
+         post-opératoire · Patient revu ce jour…};
+      \node[box, right=of doc, fill=black!7, text width=2.4cm, align=center, minimum height=1.7cm] (llm)
+        {\textbf{SmolLM3-3B}\\fine-tuné, lit tout le document};
+      \node[box, right=of llm, text width=3.9cm, align=center, minimum height=1.7cm] (out)
+        {\tok{Jean,DUPONT,,1965-03-12}\\[3pt]
+         {\color{mlgray}\scriptsize prénom, nom, nom de naissance (vide), date de naissance}};
+      \draw[->] (doc) -- (llm);
+      \draw[->] (llm) -- (out);
+    \end{tikzpicture}
+  \end{center}
+
+  \vspace{0.6em}
+  \begin{columns}[T]
+    \column{0.47\textwidth}
+    \textbf{Ce qui disparaît}\par
+    Normalisation, appariement, recollage : un seul modèle, une seule sortie.
+    \column{0.47\textwidth}
+    \textbf{Ce qui apparaît}\par
+    Un GPU, la quantification, un serveur d'inférence, des sorties à contrôler.
+  \end{columns}
+\end{frame}
+
+% ---------------------------------------------------------------------------
+\begin{frame}{3.2\quad Comment fonctionne un LLM : un transformeur décodeur}
+  \begin{center}
+    \begin{tikzpicture}[
+        box/.style={draw=black!70, font=\footnotesize, align=center, minimum height=1.0cm},
+        >={Stealth[length=1.6mm]}, node distance=5mm]
+      \node[box, text width=2.2cm] (txt) {Texte\\{\scriptsize «~DUPONT Jean, né~»}};
+      \node[box, right=of txt, text width=1.9cm] (tok) {Tokens\\{\scriptsize DUP · ONT · Jean}};
+      \node[box, right=of tok, text width=1.9cm] (emb) {Plongements\\{\scriptsize $x_t \in \mathbb{R}^d$}};
+      \node[box, right=of emb, text width=2.5cm, fill=black!7] (blk) {$L$ blocs\\{\scriptsize attention causale + MLP}};
+      \node[box, right=of blk, text width=2.1cm] (out) {Softmax\\{\scriptsize sur le vocabulaire}};
+      \foreach \na/\nb in {txt/tok, tok/emb, emb/blk, blk/out} \draw[->] (\na) -- (\nb);
+      \draw[->, mlblue] (out.south) -- ++(0,-0.35) -| (tok.south)
+        node[pos=0.25, below, font=\scriptsize, text=mlblue] {le token choisi est ajouté à l'entrée, puis on recommence};
+    \end{tikzpicture}
+  \end{center}
+
+  \vspace{0.2em}
+  \begin{columns}[T]
+    \column{0.46\textwidth}
+    \small
+    \begin{itemize}
+      \item \textbf{Tokens} : des morceaux de mots, chacun avec son vecteur.
+      \item \textbf{Attention causale}~\refs{10} : chaque token regarde les tokens
+        précédents, jamais les suivants.
+      \item \textbf{Pré-entraînement} : prédire le token suivant, sur 11\,200 milliards
+        de tokens pour SmolLM3~\refs{11}.
+    \end{itemize}
+    \column{0.50\textwidth}
+    \footnotesize
+    \begin{gather*}
+      Q = XW_Q,\quad K = XW_K,\quad V = XW_V \\
+      \mathrm{Attention}(Q, K, V) = \mathrm{softmax}\!\left(\frac{QK^\top}{\sqrt{d_k}} + M\right) V \\
+      M_{ij} = 0 \text{ si } j \le i, \quad -\infty \text{ sinon} \\
+      p_\theta(y_t \mid y_{<t}, x) = \mathrm{softmax}\!\left(W_{\text{out}}\, h_t\right)
+    \end{gather*}
+  \end{columns}
+\end{frame}
+
+% ---------------------------------------------------------------------------
+\begin{frame}{3.3\quad Comment il écrit la réponse : génération autorégressive}
+  \small
+  Le modèle écrit un token à la fois, sachant le document $x$ et ce qu'il a déjà écrit.
+  Avec une température nulle, il prend toujours le plus probable : même entrée, même sortie.
+  \[
+    p_\theta(y \mid x) = \prod_{t=1}^{T} p_\theta\!\left(y_t \mid y_{<t}, x\right), \qquad
+    \hat y_t = \arg\max_{v}\; p_\theta\!\left(v \mid \hat y_{<t}, x\right)
+  \]
+
+  \begin{center}
+    \begin{tikzpicture}[
+        t/.style={draw=black!60, font=\footnotesize\ttfamily, minimum height=0.5cm, inner sep=2.5pt},
+        >={Stealth[length=1.4mm]}, node distance=1.2mm]
+      \node[t, fill=black!7, font=\footnotesize] (p) {document $x$};
+      \node[t, right=3mm of p] (a) {Jean};
+      \node[t, right=of a] (b) {,};
+      \node[t, right=of b] (c) {DUP};
+      \node[t, right=of c] (d) {ONT};
+      \node[t, right=of d] (e) {,};
+      \node[t, right=of e] (f) {,};
+      \node[t, right=of f] (g) {1965};
+      \node[t, right=of g] (h) {-03-12};
+      \node[t, right=of h, font=\footnotesize] (i) {fin};
+      \draw[->] (p) -- (a);
+      \node[below=1mm of a, font=\scriptsize, text=mlgray] {$t = 1$};
+      \node[below=1mm of i, font=\scriptsize, text=mlgray] {$t = T$};
+    \end{tikzpicture}
+    \par\remarque{Découpage en tokens illustratif.}
+  \end{center}
+
+  \begin{columns}[T]
+    \column{0.48\textwidth}
+    \textbf{Préremplissage}\par
+    Instructions et document lus en une passe parallèle. Les clés et valeurs de l'attention
+    sont gardées : c'est le cache KV.
+    \column{0.48\textwidth}
+    \textbf{Décodage}\par
+    Une passe complète du modèle par token écrit, en relisant tous ses poids.
+  \end{columns}
+  \[
+    \text{latence} \approx t_{\text{préremplissage}} + T \cdot t_{\text{token}}
+  \]
+  \remarque{D'où deux leviers : écrire moins de tokens ($T$, § 3.6) et rendre chaque token moins
+  cher ($t_{\text{token}}$, § 3.7).}
+\end{frame}
+
+% ---------------------------------------------------------------------------
+\begin{frame}{3.4\quad Le modèle choisi : SmolLM3-3B}
+  \begin{columns}[T]
+    \column{0.48\textwidth}
+    {\small
+    \begin{tabular}{@{}ll@{}}
+      \toprule
+      \multicolumn{2}{@{}l}{\textbf{Architecture}~\refs{11}} \\
+      \midrule
+      Type & transformeur décodeur seul \\
+      Taille & 3 milliards de paramètres \\
+      Attention & GQA : cache KV plus petit \\
+      Positions & NoPE dans 1 couche sur 4 \\
+      Contexte & 64k tokens, 128k avec YaRN \\
+      Langues & 6, dont le français \\
+      Corpus & 11\,200 milliards de tokens \\
+      Licence & Apache 2.0 \\
+      \bottomrule
+    \end{tabular}}
+    \column{0.46\textwidth}
+    \textbf{Pourquoi ce modèle}~\refs{1}
+    {\small
+    \begin{itemize}
+      \item Licence ouverte : hébergé et fine-tuné en interne.
+      \item La précision monte de \pct{98,7} vers 0,5B paramètres à un plateau de
+        \pct{99,2} dès 3B ; un modèle de 8B n'apporte rien.
+      \item Un document entier tient dans le contexte.
+      \item GQA : moins de mémoire par requête, donc plus de requêtes en parallèle.
+    \end{itemize}}
+  \end{columns}
+\end{frame}
+
+% ---------------------------------------------------------------------------
+\begin{frame}{3.5\quad Obtenir une sortie structurée}
+  \small
+  Le logiciel attend des champs, pas une phrase. Trois façons de l'obtenir~\refs{1} :
+
+  \vspace{0.3em}
+  \begin{center}
+    \renewcommand{\arraystretch}{1.25}
+    \begin{tabular}{@{}L{3.0cm}L{5.4cm}L{4.4cm}@{}}
+      \toprule
+      \textbf{Approche} & \textbf{Principe} & \textbf{Limite} \\
+      \midrule
+      Consignes dans le prompt & décrire le format, donner des exemples & moins fiable par
+        nature~\refs{1} \\
+      Décodage contraint & interdire les tokens hors format (outlines, guidance, instructor ;
+        schémas JSON des fournisseurs) & ralentit la génération~\refs{12} \\
+      \textbf{Fine-tuning} & le modèle apprend le format sur des exemples & demande des
+        données annotées \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{0.2em}
+  Décodage contraint : à l'étape $t$, seuls les tokens $\mathcal{A}_t$ permis par la grammaire
+  restent possibles,
+  \[
+    \tilde p(v) = \frac{p_\theta(v \mid y_{<t}, x)\; \mathbf{1}[v \in \mathcal{A}_t]}
+                       {\sum_{u \in \mathcal{A}_t} p_\theta(u \mid y_{<t}, x)}
+  \]
+  Lifen fine-tune le modèle : le format est appris, et la sortie est vérifiée ensuite
+  (§\,3.11).
+\end{frame}
+
+% ---------------------------------------------------------------------------
+\begin{frame}{3.6\quad Le format de sortie : CSV ou JSON}
+  \begin{columns}[T]
+    \column{0.48\textwidth}
+    \textbf{JSON}\par\smallskip
+    \begin{tikzpicture}
+      \node[draw=black!60, align=left, font=\footnotesize\ttfamily, inner sep=5pt] {%
+        \{"first\_name": "John",\\
+        \ "last\_name": "Doe",\\
+        \ "birth\_name": null,\\
+        \ "birth\_date": "1970-01-01"\}};
+    \end{tikzpicture}
+    \column{0.48\textwidth}
+    \textbf{CSV}\par\smallskip
+    \begin{tikzpicture}
+      \node[draw=black!60, align=left, font=\footnotesize\ttfamily, inner sep=5pt]
+        {John,Doe,,1970-01-01};
+    \end{tikzpicture}
+
+    \smallskip
+    {\small Valeurs dans un ordre fixe ; un champ vide laisse une case vide.}
+  \end{columns}
+
+  \vspace{1em}
+  \small
+  \begin{itemize}
+    \item \textbf{Même précision} : \pct{99,2} de précision macro pour les deux formats,
+      avec SmolLM3-3B quantifié en FP8~\refs{1}.
+    \item \textbf{Moins de tokens} : le CSV n'écrit ni clés, ni guillemets, ni accolades. Moins
+      de passes de décodage, donc une latence plus faible ($T$ plus petit, §\,3.3).
+    \item Choix de Lifen : le CSV~\refs{1}.
+  \end{itemize}
+  \remarque{Exemples tirés de l'article de Lifen~\refs{1}.}
+\end{frame}
+
+% ---------------------------------------------------------------------------
+\begin{frame}{3.7\quad Pourquoi quantifier}
+  \small
+  \begin{itemize}
+    \item \textbf{Le problème} : sans quantification, une prédiction prend près d'une
+      seconde~\refs{1}, alors que l'utilisateur attend pendant l'ingestion.
+    \item \textbf{La cause} : au décodage, chaque token oblige le GPU à relire tous les
+      poids. Le temps dépend surtout de la mémoire à lire :
+  \end{itemize}
+  \[
+    t_{\text{token}} \approx \frac{N \cdot b}{B} \qquad
+    \begin{array}{l}
+      N : \text{nombre de paramètres} \\
+      b : \text{octets par paramètre} \\
+      B : \text{bande passante mémoire}
+    \end{array}
+  \]
+
+  \begin{columns}[T]
+    \column{0.50\textwidth}
+    \begin{center}
+      \renewcommand{\arraystretch}{1.15}
+      \begin{tabular}{@{}lccc@{}}
+        \toprule
+        Format & $b$ & Poids & $t_{\text{token}}$ \\
+        \midrule
+        BF16 & 2 & 6\,Go & $\approx$ 20\,ms \\
+        FP8 & 1 & 3\,Go & $\approx$ 10\,ms \\
+        INT4 & 0,5 & 1,5\,Go & $\approx$ 5\,ms \\
+        \bottomrule
+      \end{tabular}
+
+      \remarque{Ordre de grandeur, mon calcul : $N = 3 \cdot 10^9$, GPU L4 à
+      $B = 300$\,Go/s.}
+    \end{center}
+    \column{0.46\textwidth}
+    \begin{itemize}
+      \item \textbf{Mémoire} : des poids plus petits laissent de la place au cache KV et aux
+        lots, sur les 24\,Go de la L4.
+      \item \textbf{Le risque} : moins de bits, c'est perdre une partie des capacités du
+        modèle~\refs{1}. Il faut remesurer la précision après.
+    \end{itemize}
+  \end{columns}
+\end{frame}
+
+% ---------------------------------------------------------------------------
+\begin{frame}{3.8\quad Comment on quantifie : FP8 dynamique, AWQ, GPTQ}
+  \begin{columns}[T]
+    \column{0.45\textwidth}
+    {\footnotesize
+    \setlength{\tabcolsep}{4pt}
+    \renewcommand{\arraystretch}{1.15}
+    \begin{tabular}{@{}lccc@{}}
+      \toprule
+      Format & Bits & Octets & Max. \\
+      \midrule
+      BF16 & 1\,+\,8\,+\,7 & 2 & $3{,}4 \cdot 10^{38}$ \\
+      FP8 E4M3 & 1\,+\,4\,+\,3 & 1 & 448 \\
+      INT4 & 4 & 0,5 & 7 \\
+      \bottomrule
+    \end{tabular}}
+
+    \remarque{Bits : signe + exposant + mantisse ; INT4 : entiers de $-8$ à 7. Formats
+    FP8 : \refs{13}.}
+
+    \medskip
+    \small Chaque groupe de valeurs $x$ reçoit une échelle $s$ :
+    \begin{gather*}
+      s = \frac{\max |x|}{q_{\max}} \\
+      x_q = \mathrm{arrondi}\!\left(\frac{x}{s}\right), \quad \hat x = s \, x_q
+    \end{gather*}
+    L'erreur $|x - \hat x|$ grandit avec $s$ : une seule valeur extrême dégrade tout son
+    groupe.
+    \column{0.51\textwidth}
+    \small
+    Méthodes comparées par Lifen, avec llm-compressor~\refs{1} :
+    \begin{itemize}
+      \item \textbf{FP8 dynamique (retenu)} : poids en FP8, une échelle par canal, fixée une
+        fois ; activations en FP8, une échelle par token calculée à la volée. Pas de données
+        de calibration.
+      \item \textbf{AWQ}~\refs{14} : poids seuls, en général sur 4 bits ; activations en 16
+        bits. Protège
+        les~$\approx$~\pct{1} de canaux importants, repérés par la taille des activations, en
+        les mettant à l'échelle avant l'arrondi.
+      \item \textbf{GPTQ}~\refs{15} : poids seuls ; corrige l'erreur d'arrondi colonne par
+        colonne grâce à une information du second ordre. Décrit par Lifen, pas testé.
+    \end{itemize}
+  \end{columns}
+\end{frame}
+
+% ---------------------------------------------------------------------------
+\begin{frame}{3.9\quad Servir le modèle : vLLM sur un GPU L4}
+  \small
+  \begin{itemize}
+    \item \textbf{vLLM}~\refs{16} : \emph{PagedAttention} range le cache KV en pages, comme la
+      mémoire virtuelle d'un système d'exploitation, donc moins de mémoire perdue ;
+      \emph{batching} continu : une requête rejoint le lot à chaque pas de décodage.
+    \item \textbf{Écartés}~\refs{1} : TGI, plus maintenu et sans SmolLM3 ; SGLang et
+      TensorRT-LLM sont présentés dans l'article.
+    \item \textbf{Matériel} : un GPU NVIDIA L4 par pod ; la latence reste presque constante de
+      2 à 8 requêtes par seconde~\refs{1}.
+    \item \textbf{Décodage spéculatif}~\refs{17} : un petit modèle propose $k$ tokens, le grand
+      les vérifie en une seule passe. Avec un taux d'acceptation $\alpha$, chaque passe
+      produit en moyenne
+      \[
+        \mathbb{E}[\text{tokens par passe}] = \frac{1 - \alpha^{k+1}}{1 - \alpha}
+      \]
+      Essayé par Lifen~\refs{1} : n-grammes, aucun gain ; brouillon Qwen 0,6B, gain trop
+      faible pour la complexité, SmolLM3 n'ayant pas de petit modèle compagnon. À explorer :
+      EAGLE~\refs{18}.
+  \end{itemize}
+\end{frame}
+
+% ---------------------------------------------------------------------------
+\begin{frame}{3.10\quad Problèmes : temps d'inférence et précision}
+  \begin{columns}[T]
+    \column{0.47\textwidth}
+    \centering
+    \begin{tikzpicture}
+      \begin{axis}[
+          xbar, bar width=8pt, width=5.0cm, height=3.6cm,
+          xmin=0, xmax=1.35, ymin=0.5, ymax=3.5,
+          ytick={1,2,3}, yticklabels={AWQ, FP8 dynamique, non quantifié},
+          xtick={0,0.5,1}, /pgf/number format/use comma,
+          tick label style={font=\scriptsize}, label style={font=\scriptsize},
+          xlabel={latence moyenne par document (s)},
+          axis line style={black!60}, tick style={black!60},
+          nodes near coords, nodes near coords align={horizontal}, point meta=explicit symbolic,
+          every node near coord/.append style={font=\scriptsize, anchor=west}]
+        \addplot[fill=mlblue, draw=none] coordinates
+          {(0.25,1) [0,25] (0.4,2) [0,4] (1.0,3) [$\approx$\,1]};
+      \end{axis}
+    \end{tikzpicture}
+    \remarque{Un pod, GPU L4~\refs{1}.}
+
+    \vspace{0.4em}
+    {\small
+    \renewcommand{\arraystretch}{1.15}
+    \begin{tabular}{@{}lc@{}}
+      \toprule
+      SmolLM3-3B & Précision macro \\
+      \midrule
+      FP8 dynamique & \textbf{\pct{99,2}} \\
+      AWQ & un peu moins (\np) \\
+      \bottomrule
+    \end{tabular}}
+    \column{0.49\textwidth}
+    \small
+    \begin{itemize}
+      \item \textbf{Temps} : un token après l'autre, pendant que l'utilisateur attend. Un GPU
+        par pod, quand le BiLSTM tournait sur CPU.
+      \item \textbf{Précision} : AWQ est le plus rapide, mais perd un peu ; FP8 garde le
+        meilleur score obtenu par Lifen~\refs{1}.
+      \item \textbf{Choix} : FP8 dynamique, pour la précision, une latence sous la seconde et
+        un format pris en charge par les GPU récents~\refs{1}.
+      \item \textbf{Taille} : un modèle de 0,5B irait plus vite, mais tombe à \pct{98,7}.
+    \end{itemize}
+  \end{columns}
+\end{frame}
+
+% ---------------------------------------------------------------------------
+\begin{frame}{3.11\quad Si le nom en sortie est halluciné ? $\rightarrow$ Jev}
+  \begin{center}
+    \begin{tikzpicture}[
+        box/.style={draw=black!70, align=center, font=\footnotesize,
+                    minimum height=1.0cm, inner sep=3pt},
+        lab/.style={font=\scriptsize},
+        >={Stealth[length=1.6mm]}]
+      % Ligne du haut : la réponse du LLM et ses contrôles
+      \node[box, fill=black!7, text width=2.6cm] (r) at (0, 0)
+        {Réponse du LLM\\{\scriptsize\tok{Jean,DUPONT,,…}}};
+      \node[box, text width=2.2cm] (g) at (3.4, 0) {Présent dans\\le texte ?};
+      \node[box, text width=2.4cm] (p) at (6.6, 0) {Patient connu ?\\{\scriptsize IPP, date, INS}};
+      \node[box, text width=2.2cm, draw=mlgreen, text=mlgreen!70!black] (ok) at (10.0, 0)
+        {Classement\\automatique};
+      % Ligne du bas : le recours, sous les deux contrôles
+      \node[box, text width=5.4cm, draw=mlblue, text=mlblue!80!black] (j) at (5.0, -2.0)
+        {NER : tous les noms du document\\Jev : lequel est le patient ?};
+      \node[box, text width=2.2cm, draw=mlorange, text=mlorange!80!black] (h) at (10.0, -2.0)
+        {Validation\\humaine};
+      % Flèches
+      \draw[->] (r) -- (g);
+      \draw[->] (g) -- (p) node[pos=0.5, above, lab] {oui};
+      \draw[->] (p) -- (ok) node[pos=0.5, above, lab] {oui};
+      \foreach \nd in {g, p}
+        \draw[->, mlorange] (\nd.south) -- (\nd.south |- j.north)
+          node[pos=0.5, right, lab] {non};
+      \draw[->, mlgreen!70!black] ([xshift=-3mm]j.north east) |- ([yshift=-4.5mm]ok.south)
+        node[pos=0.75, above, lab] {$p \ge \tau$} -- (ok.south);
+      \draw[->, mlorange] (j) -- (h) node[pos=0.5, below, lab] {$p < \tau$};
+    \end{tikzpicture}
+  \end{center}
+
+  \small
+  \begin{itemize}\setlength{\itemsep}{2pt}
+    \item \textbf{LLM peu confiant} : on demande à Jev, avec le document en contexte, «~ce
+      candidat est-il le patient ?~» (question oui/non).
+    \item \textbf{Nom halluciné ou absent} : une NER trouve tous les noms du document, puis
+      Jev choisit le patient parmi eux, avec une probabilité calibrée.
+    \item \textbf{Humain} : seulement si Jev est peu confiant ($p < \tau$). Piste récente :
+      les modèles System One datent de 2026~\refs{20}.
+  \end{itemize}
+  \remarque{À valider : $\tau$ choisi sur des cas annotés ; Jev est une API externe, à
+  concilier avec l'hébergement HDS~\refs{2}.}
+\end{frame}
+
+% ---------------------------------------------------------------------------
+\begin{frame}{3.12\quad Comment fonctionne Jev}
+  \begin{columns}[T]
+    \column{0.48\textwidth}
+    \small
+    \textbf{Entrée} : un état et des questions (JSON).
+
+    \smallskip
+    \begin{tikzpicture}
+      \node[draw=black!60, align=left, font=\scriptsize\ttfamily, inner sep=5pt] {%
+        état = \{\\
+        \ \ "texte": "Madame Juliette MARTIN…",\\
+        \ \ "candidats": ["Juliette MARTIN",\\
+        \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ "Nicolas JACQUES"]\}\\[3pt]
+        question = \{"type": "choice",\\
+        \ \ "instructions": "Qui est le patient\\
+        \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ dans \textasciigrave texte\textasciigrave{} ?",\\
+        \ \ "criteria": \{\\
+        \ \ \ \ "Juliette MARTIN": "…",\\
+        \ \ \ \ "Nicolas JACQUES": "…"\}\}};
+    \end{tikzpicture}
+
+    \smallskip
+    \textbf{Sortie} : l'option choisie, une probabilité $p_c$ par option, une confiance :
+    \[
+      \hat c = \arg\max_c\, p_c, \quad
+      \text{confiance} = \frac{p_{\max} - 1/n}{1 - 1/n}
+    \]
+    \column{0.48\textwidth}
+    \small
+    \begin{itemize}\setlength{\itemsep}{1pt}
+      \item \textbf{System One}~\refs{20} : pas de texte en sortie, des probabilités sur
+        des questions typées. La réponse est toujours une des options, mais peut être fausse.
+      \item \textbf{Quatre types} : \tok{choice} (une option donnée), \tok{noul}
+        (probabilité du oui), \tok{score} (un niveau), \tok{box} (une zone d'image).
+      \item \textbf{Calibré} : probabilités entraînées sur les issues réelles
+        (RLCD~\refs{21}) ; vrai sur un groupe, pas pour chaque réponse~\refs{20}.
+      \item \textbf{Limites} : options à fournir (255 au plus), API hébergée, architecture
+        non publiée, 32k tokens de contexte~\refs{21}.
+    \end{itemize}
+  \end{columns}
+\end{frame}
+
+% ---------------------------------------------------------------------------
+\begin{frame}{3.13\quad Le fine-tuning : données et méthode}
+  \small
+  \begin{itemize}\setlength{\itemsep}{2pt}
+    \item \textbf{Données} : documents dé-identifiés de types et d'émetteurs variés, annotés
+      par des experts de Lifen et pseudonymisés en interne~\refs{1}. Taille : non publiée.
+    \item \textbf{Paires} : entrée = instructions et texte du document ; cible = la ligne
+      \tok{prénom,nom,naissance,date}. Objectif du fine-tuning supervisé, token par token :
+      \[
+        \mathcal{L}(\theta) = -\sum_{t=1}^{T} \log p_\theta\!\left(y^\star_t \mid y^\star_{<t}, x\right)
+      \]
+    \item \textbf{LoRA}~\refs{19}, dans la recherche précédente de Lifen, sur une
+      H100~\refs{12} : on gèle $W_0$ et on apprend $W = W_0 + BA$, avec
+      $B \in \mathbb{R}^{d \times r}$, $A \in \mathbb{R}^{r \times d}$ et $r \ll d$. Pour
+      $d = 2048$ et $r = 16$ : 65\,536 paramètres appris par matrice au lieu de 4,2 millions,
+      soit \pct{1,6}.
+    \item \textbf{Savoir ne rien dire} : un quart d'exemples sans réponse dans cette
+      recherche~\refs{12} ; le modèle apprend à laisser un champ vide plutôt qu'à deviner.
+  \end{itemize}
+  \remarque{Non publiés dans l'article de 2026 : méthode exacte (LoRA ou complète),
+  hyperparamètres, durée d'entraînement.}
+\end{frame}
+
+% ---------------------------------------------------------------------------
+\begin{frame}{3.14\quad Résultats : la précision macro}
+  \small
+  Définition de Lifen~\refs{1} : pour chaque champ $k$, les prédictions vides sont exclues.
+  \[
+    P_k = \frac{\text{justes}_k}{\text{non vides}_k}, \qquad
+    P_{\text{macro}} = \frac{1}{4} \sum_{k} P_k
+  \]
+  \remarque{$k$ : prénom, nom, nom de naissance, date de naissance. $\text{justes}_k$ :
+  prédictions justes du champ $k$ ; $\text{non vides}_k$ : documents où la sortie du champ
+  $k$ n'est pas vide.}
+
+  \vspace{0.4em}
+  \begin{columns}[T]
+    \column{0.44\textwidth}
+    \begin{itemize}
+      \item Erreurs, $1 - P_{\text{macro}}$ : de \pct{4,0} à \pct{0,8}, cinq fois moins ; le
+        titre de l'article annonce \pct{0,6} ($-\pct{85}$).
+      \item Tous les modèles fine-tunés sont autour de \pct{99}~\refs{1}.
+      \item CSV ou JSON : même précision. FP8 égale le meilleur score de Lifen ; sans
+        quantification : non publié.
+    \end{itemize}
+    \column{0.52\textwidth}
+    {\small
+    \renewcommand{\arraystretch}{1.1}
+    \begin{tabular}{@{}lr@{}}
+      \toprule
+      \textbf{Modèle} & $P_{\text{macro}}$ \\
+      \midrule
+      BiLSTM (ancien) & \pct{96,0} \\
+      LLM $\approx$ 0,5B & \pct{98,7} \\
+      \textbf{SmolLM3-3B} (production) & \textbf{\pct{99,2}} \\
+      LLM $\approx$ 8B & \pct{99,2} \\
+      \midrule
+      SmolLM3-3B, sortie JSON & \pct{99,2} \\
+      SmolLM3-3B, AWQ & un peu moins \\
+      \bottomrule
+    \end{tabular}}
+
+    \remarque{LLM fine-tunés ; sauf mention, sortie CSV et FP8 dynamique~\refs{1}.}
+  \end{columns}
+\end{frame}
+
+% ---------------------------------------------------------------------------
+\begin{frame}{3.15\quad Pourquoi pas un grand LLM du marché ?}
+  \small
+  Comparaison de Lifen sur 500 documents pseudonymisés~\refs{1}. Précision par document : la
+  part des documents dont la réponse est entièrement juste.
+
+  \vspace{0.4em}
+  \begin{center}
+    \setlength{\tabcolsep}{5pt}
+    \renewcommand{\arraystretch}{1.2}
+    \begin{tabular}{@{}lccc@{}}
+      \toprule
+      \textbf{Modèle} & \textbf{Précision par document} & \textbf{Erreurs} & \textbf{Coût} \\
+      \midrule
+      Opus 4.6, prompt et 5 exemples & \pct{86,4} (432/500) & \pct{13,6} & 8,21\,\$ \\
+      SmolLM3-3B fine-tuné & \textbf{\pct{98,5}} & \textbf{\pct{1,5}} & un GPU L4 \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \begin{itemize}
+    \item Neuf fois moins d'erreurs par document ($-\pct{89}$)~\refs{1}.
+    \item Intervalle à \pct{95} de Wilson pour 432/500 (mon calcul) :
+      $\left[\pct{83,1} ; \pct{89,1}\right]$, avec
+      \[
+        \frac{\hat p + \frac{z^2}{2n} \pm z\sqrt{\frac{\hat p (1 - \hat p)}{n} + \frac{z^2}{4n^2}}}
+             {1 + \frac{z^2}{n}}, \qquad z = 1{,}96
+      \]
+    \item À l'échelle : 8,21\,\$ pour 500 documents, environ 16\,400\,\$ par million (mon
+      calcul) ; et les documents partiraient chez un fournisseur externe, ce que Lifen
+      exclut~\refs{2}.
+  \end{itemize}
+\end{frame}
+
+% ---------------------------------------------------------------------------
+\begin{frame}{3.16\quad Ce que les chiffres publiés ne disent pas}
+  \begin{columns}[T]
+    \column{0.55\textwidth}
+    \small
+    \begin{itemize}
+      \item \textbf{Rappel} : non publié,
+        \[
+          R_k = \frac{\VP_k}{\VP_k + \FN_k}
+        \]
+        La précision exclut les réponses vides : un modèle qui s'abstient plus souvent gagne
+        en précision. Il faut aussi le rappel, ou le taux de réponses vides.
+      \item \textbf{$F_1 = \frac{2PR}{P + R}$} et la précision \textbf{par champ} : non publiés.
+      \item \textbf{Taille du jeu de test}, intervalles de confiance : non publiés, sauf les
+        500 documents de la comparaison avec Opus.
+      \item \textbf{Courbe ROC} d'un score de confiance : non publiée.
+    \end{itemize}
+    \column{0.40\textwidth}
+    \textbf{Questions pour l'équipe}
+    {\small
+    \begin{itemize}
+      \item Quel rappel par champ, et quelle part de réponses vides ?
+      \item Qu'est-ce qui envoie un document en validation humaine ?
+      \item Les \pct{0,8} d'erreurs tiennent-ils pour chaque émetteur et chaque type de
+        document ?
+    \end{itemize}}
+  \end{columns}
+\end{frame}
+
+% ===========================================================================
+\begin{frame}{4\quad Synthèse : NER et petit LLM}
+  \begin{center}
+    {\small
+    \renewcommand{\arraystretch}{1.15}
+    \begin{tabular}{@{}L{2.8cm}L{5.0cm}L{5.0cm}@{}}
+      \toprule
+      & \textbf{NER (AP-HP)} & \textbf{Petit LLM (Lifen)} \\
+      \midrule
+      Mesure publiée & $F_1$ = \pct{98,6} sur les prénoms~\refs{3} & précision macro \textbf{\pct{99,2}} \\
+      Rappel publié & oui : \pct{98,4} (prénoms) & non \\
+      Courbe ROC & non & non \\
+      Sortie & étiquettes sur les mots & les quatre champs, mis en forme \\
+      Code autour & choisir le patient, mettre en forme & contrôles de la sortie \\
+      Matériel & CPU possible & un GPU L4, $\approx$ 0,4\,s \\
+      Noms inventés & impossible & possibles : contrôles \\
+      \bottomrule
+    \end{tabular}}
+  \end{center}
+
+  \vspace{0.2em}
+  \remarque{Tâches et données différentes : ces scores ne sont pas directement comparables
+  entre colonnes.}
+\end{frame}
+
+% ---------------------------------------------------------------------------
+\begin{frame}[t]{Références (1/2)}
+  \scriptsize
+  \begin{columns}[T]
+    \column{0.49\textwidth}
+    \begin{itemize}
+      \item[{[1]}] G. Roy, E. Aouad. \og \en{Small LLMs, Big Gains: Simpler Patient
+        Extraction with 85\% Fewer Errors}\fg. Lifen AI (Substack), 27 juillet 2026.
+      \item[{[2]}] Lifen. \og Intelligence artificielle \fg. Page lifen.fr, consultée en 2026.
+      \item[{[3]}] X. Tannier \textit{et al.} \og \en{Development and validation of a natural
+        language processing algorithm to pseudonymize documents in the context of a
+        clinical data warehouse}\fg. \en{arXiv:2303.13451}, 2023.
+      \item[{[4]}] L. A. Ramshaw, M. P. Marcus. \og \en{Text Chunking using
+        Transformation-Based Learning}\fg. \en{Workshop on Very Large Corpora}, 1995.
+      \item[{[5]}] L. Martin \textit{et al.} \og \en{CamemBERT: a Tasty French Language
+        Model}\fg. ACL, 2020.
+    \end{itemize}
+    \column{0.49\textwidth}
+    \begin{itemize}
+      \item[{[6]}] S. Hochreiter, J. Schmidhuber. \og \en{Long Short-Term Memory}\fg.
+        \textit{Neural Computation}, 1997.
+      \item[{[7]}] G. Lample \textit{et al.} \og \en{Neural Architectures for Named Entity
+        Recognition}\fg. NAACL, 2016.
+      \item[{[8]}] F. Dernoncourt \textit{et al.} \og \en{De-identification of patient notes
+        with recurrent neural networks}\fg. \textit{JAMIA}, 2017.
+      \item[{[9]}] E. F. Tjong Kim Sang, F. De Meulder. \og \en{Introduction to the CoNLL-2003
+        Shared Task: Language-Independent Named Entity Recognition}\fg. CoNLL, 2003.
+      \item[{[10]}] A. Vaswani \textit{et al.} \og \en{Attention Is All You Need}\fg.
+        NeurIPS, 2017.
+    \end{itemize}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[t]{Références (2/2)}
+  \scriptsize
+  \begin{columns}[T]
+    \column{0.49\textwidth}
+    \begin{itemize}
+      \item[{[11]}] Hugging Face. \og SmolLM3-3B \fg. Fiche du modèle, 2025.
+      \item[{[12]}] B. Vignal. \og \en{Improving LLM Reliability in Healthcare Data
+        Extraction}\fg. Blog technique de Lifen, septembre 2025.
+      \item[{[13]}] P. Micikevicius \textit{et al.} \og \en{FP8 Formats for Deep
+        Learning}\fg. \en{arXiv:2209.05433}, 2022.
+      \item[{[14]}] J. Lin \textit{et al.} \og \en{AWQ: Activation-aware Weight Quantization
+        for On-Device LLM Compression and Acceleration}\fg. MLSys, 2024.
+      \item[{[15]}] E. Frantar \textit{et al.} \og \en{GPTQ: Accurate Post-Training
+        Quantization for Generative Pre-trained Transformers}\fg. ICLR, 2023.
+    \end{itemize}
+    \column{0.49\textwidth}
+    \begin{itemize}
+      \item[{[16]}] W. Kwon \textit{et al.} \og \en{Efficient Memory Management for Large
+        Language Model Serving with PagedAttention}\fg. SOSP, 2023.
+      \item[{[17]}] Y. Leviathan, M. Kalman, Y. Matias. \og \en{Fast Inference from
+        Transformers via Speculative Decoding}\fg. ICML, 2023.
+      \item[{[18]}] Y. Li \textit{et al.} \og \en{EAGLE: Speculative Sampling Requires
+        Rethinking Feature Uncertainty}\fg. ICML, 2024.
+      \item[{[19]}] E. J. Hu \textit{et al.} \og \en{LoRA: Low-Rank Adaptation of Large
+        Language Models}\fg. ICLR, 2022.
+      \item[{[20]}] TypeSafe AI. \og Jev \fg{} et \og \en{System One models}\fg.
+        Documentation, docs.typesafe.ai, 2026.
+      \item[{[21]}] InfoQ. \og \en{TypeSafe AI Releases Jev: a Decision-Only Model That
+        Returns Typed Probabilities Instead of Text}\fg. Octobre 2026.
+    \end{itemize}
+  \end{columns}
+\end{frame}
+
+\end{document}
