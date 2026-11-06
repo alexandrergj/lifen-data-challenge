@@ -1,0 +1,33 @@
+[project]
+name = "patient-name-heuristic"
+version = "1.0.0"
+description = "Find the patient's name in a medical document (OCR words with boxes), without machine learning."
+requires-python = ">=3.12,<3.13"
+dependencies = ["pydantic>=2.14.3,<3"]
+
+[dependency-groups]
+dev = ["mypy>=2.4.1", "pytest>=9.2.0"]
+
+[tool.uv]
+# Not a package to publish: uv only installs the dependencies, in .venv.
+package = false
+# The exact version of every package, with its hash, is frozen in uv.lock.
+# Update on purpose with  uv lock --upgrade, then run  uv run mypy  and  uv run pytest.
+required-version = ">=0.13.7"
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+plugins = ["pydantic.mypy"]
+files = ["heuristic.py", "tests"]
+
+[tool.pydantic-mypy]
+init_forbid_extra = true
+init_typed = true
+warn_required_dynamic_aliases = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+xfail_strict = true
+addopts = "-ra"

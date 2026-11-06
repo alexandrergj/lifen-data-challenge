@@ -1,0 +1,33 @@
+# Continuous integration: on every push and every pull request, install the exact versions frozen
+# in uv.lock, check the types with mypy, then run the unit tests with pytest. A red cross on GitHub
+# means one of them failed, before the change reaches the main branch.
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v7
+        with:
+          version: "0.13.7"
+          enable-cache: true
+
+      # --locked: fail if uv.lock no longer matches pyproject.toml, instead of updating it silently.
+      # uv reads the Python version (3.12.10) from .python-version and installs it if needed.
+      - name: Install the frozen versions
+        run: uv sync --locked
+
+      - name: Check the types (mypy)
+        run: uv run --locked mypy
+
+      - name: Run the unit tests (pytest)
+        run: uv run --locked pytest
