@@ -33,7 +33,7 @@ from the top-left corner, and the words come in no particular order.
 ### Score based approach
 
 The idea is to exploit the fact that spatial information about the words is encoded in the JSON. 
-Kind of like a KNN algorithm: look for what's around a name, is there a civility nearby ? Or a "Professeur", nearby instead ?
+Kind of like a KNN algorithm: look for what's around a name, is there a civility nearby ? Or "Docteur" nearby instead ?
 
 3. **Score clues and choose.** Each clue gives points to a last name (form label 3, civility 2,
    `né(e) le` 2). Points add up over the whole document and the best total wins: a patient named
