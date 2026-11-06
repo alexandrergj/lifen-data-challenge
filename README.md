@@ -1,6 +1,6 @@
 # Find the patient's name in a medical document: an empirical rule-based baseline
 
-Medical documents, in order for them to be legally valid must contain civilities (Mme, M., Monsieur, Madame) before a name and a name in full-caps. 
+Medical documents, in order for them to be legally valid must contain civilities (Mme, M., Monsieur, Madame) before a name and the name has to be written in full-caps. 
 The simple, rule-based heuristic here aims at exploiting this legal obligation. 
 
 ![The heuristic reading a page](visuals/heuristic_animation.gif)
