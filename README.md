@@ -20,19 +20,7 @@ from the top-left corner, and the words come in no particular order.
 **Output**: `(first_name, last_name)`, `(None, last_name)` when only the last name is written, or
 `None` when no clue is found.
 
-## Quick start
 
-Open `heuristic.ipynb` and run the cells, or reuse the two
-functions:
-
-```python
-import json
-
-with open("examples/example3.json", encoding="utf-8") as file:
-    document = json.load(file)
-
-find_patient(document)  # ('Jean', 'DUPONT')
-```
 ## How to improve the rule-based heuristic
 
 ### Read a page like a person would
